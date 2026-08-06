@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Marketing Investment Control Tower</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#F1F3F4;
+    --surface:#FFFFFF;
+    --surface-alt:#E7EAEC;
+    --border:#DBE0E3;
+    --ink:#12181A;
+    --ink-soft:#5B6670;
+    --ink-faint:#8A949B;
+    --accent:#0F3D3E;
+    --accent-soft:#E4EEED;
+    --green:#0ca30c;
+    --green-soft:#E4F2EB;
+    --amber:#C77D02;
+    --amber-soft:#FBF0DC;
+    --red:#d03b3b;
+    --red-soft:#FBEAE8;
+    --grid:#e1e0d9;
+    --radius:10px;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:where(:not([data-theme="light"])){
+      --bg:#14181A;
+      --surface:#1C2224;
+      --surface-alt:#232A2C;
+      --border:#2C3436;
+      --ink:#F2F5F5;
+      --ink-soft:#AEB9B9;
+      --ink-faint:#7C8A8A;
+      --accent:#3FA79A;
+      --accent-soft:#1B3230;
+      --green:#0ca30c;
+      --green-soft:#173322;
+      --amber:#fab219;
+      --amber-soft:#3A2D10;
+      --red:#e66767;
+      --red-soft:#3A1E1E;
+      --grid:#2c2c2a;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#14181A;
+    --surface:#1C2224;
+    --surface-alt:#232A2C;
+    --border:#2C3436;
+    --ink:#F2F5F5;
+    --ink-soft:#AEB9B9;
+    --ink-faint:#7C8A8A;
+    --accent:#3FA79A;
+    --accent-soft:#1B3230;
+    --green:#0ca30c;
+    --green-soft:#173322;
+    --amber:#fab219;
+    --amber-soft:#3A2D10;
+    --red:#e66767;
+    --red-soft:#3A1E1E;
+    --grid:#2c2c2a;
+    color-scheme: dark;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.num{font-family:'Space Grotesk',sans-serif;}
+  .tabular{font-variant-numeric:tabular-nums;}
+
+  .app{display:grid;grid-template-columns:220px 1fr;min-height:100vh;}
+
+  /* SIDEBAR */
+  .sidebar{
+    background:var(--accent);
+    color:#EAF2F1;
+    padding:22px 16px;
+    display:flex;flex-direction:column;
+    position:sticky;top:0;height:100vh;
+    overflow-y:auto;
+  }
+  .brand{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+  .brand-mark{width:10px;height:10px;border-radius:50%;background:#7FD8B6;box-shadow:0 0 0 3px rgba(127,216,182,0.2);}
+  .brand h1{font-size:15px;letter-spacing:0.03em;margin:0;font-weight:700;}
+  .brand-sub{font-size:11px;color:#9FC3BC;margin:0 0 26px 0;letter-spacing:0.04em;text-transform:uppercase;}
+  .nav{display:flex;flex-direction:column;gap:4px;margin-bottom:14px;}
+  .nav-label{font-size:10.5px;color:#7FA39B;text-transform:uppercase;letter-spacing:.06em;margin:10px 4px 4px;}
+  .nav-item{
+    display:flex;align-items:center;gap:10px;
+    padding:10px 12px;border-radius:8px;cursor:pointer;
+    color:#C9DEDA;font-size:13px;font-weight:500;
+    border:1px solid transparent;
+    transition:background .15s ease;
+  }
+  .nav-item .dot{width:8px;height:8px;border-radius:50%;background:#5B8B84;flex-shrink:0;}
+  .nav-item:hover{background:rgba(255,255,255,0.06);}
+  .nav-item.active{background:rgba(255,255,255,0.1);color:#fff;border-color:rgba(255,255,255,0.12);}
+  .side-foot{font-size:11px;color:#7FA39B;line-height:1.5;border-top:1px solid rgba(255,255,255,0.12);padding-top:14px;margin-top:auto;}
+
+  /* MAIN */
+  .main{padding:24px 28px 60px 28px;max-width:1440px;}
+  .topbar{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:18px;flex-wrap:wrap;gap:14px;}
+  .topbar h2{font-size:20px;margin:0 0 4px 0;}
+  .topbar .desc{color:var(--ink-soft);font-size:13px;max-width:620px;}
+
+  .filters{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+  select, input[type=text]{
+    background:var(--surface);border:1px solid var(--border);border-radius:8px;
+    padding:8px 10px;font-family:'Inter';font-size:13px;color:var(--ink);
+  }
+
+  .hint-banner{
+    background:var(--accent-soft);border:1px solid var(--border);border-radius:var(--radius);
+    padding:10px 14px;font-size:12px;color:var(--ink-soft);margin-bottom:18px;
+  }
+
+  .kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px;}
+  .kpi{
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    padding:14px 16px;position:relative;overflow:hidden;
+  }
+  .kpi .label{font-size:11.5px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px;}
+  .kpi .value{font-size:21px;font-weight:700;line-height:1;}
+  .kpi .sub{font-size:11.5px;color:var(--ink-faint);margin-top:6px;}
+  .kpi.warn{border-color:#EFD3A0;}
+  .kpi.warn .value{color:var(--amber);}
+  .kpi.crit{border-color:#E7B6B0;}
+  .kpi.crit .value{color:var(--red);}
+  .kpi.good .value{color:var(--green);}
+
+  .panel{
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    padding:18px 20px;margin-bottom:20px;
+  }
+  .panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;}
+  .panel-head h3{font-size:14px;margin:0;font-weight:600;}
+  .panel-head .hint{font-size:11.5px;color:var(--ink-faint);}
+
+  .btn{
+    background:var(--accent);color:#fff;border:none;border-radius:7px;
+    padding:8px 14px;font-size:12.5px;font-weight:600;cursor:pointer;
+    display:inline-flex;align-items:center;gap:6px;
+  }
+  .btn:hover{background:#0B2E2F;}
+  .btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent);}
+  .btn.ghost:hover{background:var(--accent-soft);}
+
+  table{width:100%;border-collapse:collapse;font-size:12.6px;}
+  thead th{
+    text-align:left;font-weight:600;color:var(--ink-soft);
+    border-bottom:1px solid var(--border);padding:8px 10px;font-size:11.3px;
+    text-transform:uppercase;letter-spacing:.03em;white-space:nowrap;
+    position:sticky;top:0;background:var(--surface);
+  }
+  tbody td{padding:9px 10px;border-bottom:1px solid var(--surface-alt);white-space:nowrap;}
+  tbody td.wrap{white-space:normal;min-width:180px;}
+  tbody tr:hover{background:var(--surface-alt);}
+  .table-wrap{overflow-x:auto;max-height:380px;overflow-y:auto;}
+
+  .badge{padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;display:inline-block;}
+  .swatch{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;vertical-align:middle;}
+
+  .legend-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;font-size:11.5px;color:var(--ink-soft);}
+  .legend-item{display:flex;align-items:center;}
+
+  .grid-2{display:grid;grid-template-columns:1.3fr 1fr;gap:20px;}
+  .grid-2 > .panel{margin-bottom:0;}
+  @media (max-width:900px){.grid-2{grid-template-columns:1fr;} .app{grid-template-columns:1fr;} .sidebar{position:relative;height:auto;}}
+
+  .view{display:none;}
+  .view.active{display:block;}
+  canvas{max-height:280px;}
+  .barcanvas-tall{max-height:340px;}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="sidebar">
+    <div class="brand"><div class="brand-mark"></div><h1>MARKETING<br>INVESTMENT</h1></div>
+    <div class="brand-sub">FY 2026-27 &middot; Expense Log</div>
+    <div class="nav" id="nav">
+      <div class="nav-item active" data-view="overview"><span class="dot" style="background:#7FD8B6;"></span>Overview</div>
+    </div>
+    <div class="nav-label">Channels</div>
+    <div class="nav" id="navChannels"></div>
+    <div class="side-foot" id="sideFoot"></div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <h2 id="viewTitle">Overview</h2>
+        <div class="desc" id="viewDesc">All channels combined &mdash; investment, budget utilization and expense mix at a glance.</div>
+      </div>
+      <div class="filters">
+        <select id="fMonth">
+          <option value="all">All months (Apr&ndash;Jul)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="hint-banner">Figures reflect what has been entered in the "Expense Log" tab of <b>Marketing Budget Summary FY 2026-27- FINAL.xlsx</b> as of its last update. A month showing a small total usually means it is only partially logged so far &mdash; not that spend stopped. Budgets shown are full-year (FY 2026-27) allocations per channel.</div>
+
+    <!-- OVERVIEW -->
+    <div class="view active" id="view-overview">
+      <div class="kpi-row" id="ovKpis"></div>
+      <div class="panel">
+        <div class="panel-head"><h3>Monthly Investment by Channel</h3><span class="hint">Logged amount, ₹</span></div>
+        <canvas id="ovTrend" class="barcanvas-tall"></canvas>
+      </div>
+      <div class="grid-2">
+        <div class="panel">
+          <div class="panel-head"><h3>Channel-wise Investment</h3><span class="hint">Actual vs FY budget</span></div>
+          <canvas id="ovChannelDonut"></canvas>
+          <div class="table-wrap" style="margin-top:14px;max-height:none;"><table id="tbl-ovChannel"></table></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>Expense Type Mix</h3><span class="hint">All channels</span></div>
+          <canvas id="ovHeaderDonut"></canvas>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h3>Account-wise Investment</h3><span class="hint">Colour = channel</span></div>
+        <canvas id="ovAccountBar" class="barcanvas-tall"></canvas>
+        <div class="legend-row" id="ovAccountLegend"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head">
+          <h3>All Transactions</h3>
+          <div class="filters">
+            <select id="ovTxnChannel"><option value="all">All channels</option></select>
+            <input type="text" id="ovTxnSearch" placeholder="Search account, header, remarks…">
+            <button class="btn ghost" onclick="downloadCSV('all')">Download CSV</button>
+          </div>
+        </div>
+        <div class="table-wrap"><table id="tbl-ovTxn"></table></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h3>Non-Monetary / In-Kind Activities</h3><span class="hint">Logged with no captured ₹ value</span></div>
+        <div class="table-wrap"><table id="tbl-ovInkind"></table></div>
+      </div>
+    </div>
+
+    <!-- CHANNEL VIEW TEMPLATE (rendered per channel) -->
+    <div class="view" id="view-channel-template" style="display:none;"></div>
+
+  </div>
+</div>
+
+<script>
+/* ---------------- EMBEDDED DATA (from Expense Log sheet, Marketing Budget Summary FY 2026-27- FINAL.xlsx) ---------------- */
+const DATA = {
+ "rows": [
+  {"month":"April","monthNum":4,"channel":"Online","account":"Blinkit","header":"Performance Marketing","amount":1196116.0,"monetary":true,"remarks":null},
+  {"month":"April","monthNum":4,"channel":"Online","account":"Blinkit","header":"Visibility","amount":581901.1,"monetary":true,"remarks":null},
+  {"month":"April","monthNum":4,"channel":"Online","account":"Zepto","header":"Performance Marketing","amount":100200.0,"monetary":true,"remarks":null},
+  {"month":"April","monthNum":4,"channel":"Offline","account":"Reliance","header":"Visibility","amount":50000.0,"monetary":true,"remarks":null},
+  {"month":"April","monthNum":4,"channel":"Offline","account":"Lulu","header":"Visibility","amount":20000.0,"monetary":true,"remarks":"Falcon City / BLR"},
+  {"month":"April","monthNum":4,"channel":"Offline","account":"Lulu","header":"Visibility","amount":25000.0,"monetary":true,"remarks":"Rajajinagar/ BLR"},
+  {"month":"April","monthNum":4,"channel":"Strategic Accounts","account":"Relay","header":"Marketing/Platform Fee","amount":150000.0,"monetary":true,"remarks":null},
+  {"month":"April","monthNum":4,"channel":"Strategic Accounts","account":"Relay","header":"Promoter","amount":25000.0,"monetary":true,"remarks":null},
+  {"month":"April","monthNum":4,"channel":"Strategic Accounts","account":"Corporate Distributor","header":"Manpower - Subsidy","amount":10000.0,"monetary":true,"remarks":"Rudra1"},
+  {"month":"April","monthNum":4,"channel":"Strategic Accounts","account":"Corporate Distributor","header":"Manpower - Subsidy","amount":10000.0,"monetary":true,"remarks":"Polluxx"},
+  {"month":"April","monthNum":4,"channel":"Offline","account":"Lulu","header":"Merchandiser","amount":14500.0,"monetary":true,"remarks":null},
+  {"month":"April","monthNum":4,"channel":"Offline","account":"Lulu","header":"Promoter","amount":20000.0,"monetary":true,"remarks":"BLR"},
+  {"month":"April","monthNum":4,"channel":"Offline","account":"Spencer's","header":"Consumer Offer","amount":0,"monetary":false,"remarks":"DPG - Buy 2 & Get Rs 5 off; DCP - Buy 3 & Get 1 Free; DCC - Buy 3 @ Rs 100; DTC - Buy 2 & Get Rs 5 off"},
+  {"month":"April","monthNum":4,"channel":"Offline","account":"Lulu","header":"Visibility","amount":20000.0,"monetary":true,"remarks":"VR Mall / BLR"},
+  {"month":"April","monthNum":4,"channel":"Offline","account":"Lulu","header":"Visibility","amount":20000.0,"monetary":true,"remarks":"M5 E City/ BLR"},
+  {"month":"April","monthNum":4,"channel":"Online","account":"Blinkit","header":"Consumer Offer","amount":188089.0,"monetary":true,"remarks":"Blinkit Discounts"},
+  {"month":"April","monthNum":4,"channel":"Online","account":"Blinkit","header":"Agency Fee","amount":146350.8,"monetary":true,"remarks":"Foresight Fee"},
+  {"month":"May","monthNum":5,"channel":"Online","account":"Blinkit","header":"Performance Marketing","amount":1360592.0,"monetary":true,"remarks":null},
+  {"month":"May","monthNum":5,"channel":"Online","account":"Blinkit","header":"Visibility","amount":572768.0,"monetary":true,"remarks":null},
+  {"month":"May","monthNum":5,"channel":"Online","account":"Zepto","header":"Performance Marketing","amount":126400.0,"monetary":true,"remarks":null},
+  {"month":"May","monthNum":5,"channel":"Offline","account":"Reliance","header":"Visibility","amount":50000.0,"monetary":true,"remarks":null},
+  {"month":"May","monthNum":5,"channel":"Offline","account":"Lulu","header":"Visibility","amount":20000.0,"monetary":true,"remarks":"Falcon City / BLR"},
+  {"month":"May","monthNum":5,"channel":"Offline","account":"Lulu","header":"Visibility","amount":25000.0,"monetary":true,"remarks":"Rajajinagar/ BLR"},
+  {"month":"May","monthNum":5,"channel":"Offline","account":"Lulu","header":"Visibility","amount":300000.0,"monetary":true,"remarks":"Kochi+Trivandrum - ChocoFest"},
+  {"month":"May","monthNum":5,"channel":"Strategic Accounts","account":"Lite Bite","header":"Marketing/Platform Fee","amount":100000.0,"monetary":true,"remarks":null},
+  {"month":"May","monthNum":5,"channel":"Strategic Accounts","account":"Relay","header":"Marketing/Platform Fee","amount":150000.0,"monetary":true,"remarks":null},
+  {"month":"May","monthNum":5,"channel":"Strategic Accounts","account":"Relay","header":"Promoter","amount":25000.0,"monetary":true,"remarks":null},
+  {"month":"May","monthNum":5,"channel":"Strategic Accounts","account":"Corporate Distributor","header":"Manpower - Subsidy","amount":10000.0,"monetary":true,"remarks":"Rudra1"},
+  {"month":"May","monthNum":5,"channel":"Strategic Accounts","account":"Corporate Distributor","header":"Manpower - Subsidy","amount":10000.0,"monetary":true,"remarks":"Polluxx"},
+  {"month":"May","monthNum":5,"channel":"Strategic Accounts","account":"Relay","header":"Samples","amount":0,"monetary":false,"remarks":"Sampling"},
+  {"month":"May","monthNum":5,"channel":"Strategic Accounts","account":"Relay","header":"Liquidation","amount":0,"monetary":false,"remarks":"Liquidation"},
+  {"month":"May","monthNum":5,"channel":"Strategic Accounts","account":"Relay","header":"Logistics","amount":0,"monetary":false,"remarks":"Logistics"},
+  {"month":"May","monthNum":5,"channel":"Strategic Accounts","account":"IRHPL","header":"POSMs","amount":16500.0,"monetary":true,"remarks":"POSM"},
+  {"month":"May","monthNum":5,"channel":"Offline","account":"Lulu","header":"Merchandiser","amount":14500.0,"monetary":true,"remarks":null},
+  {"month":"May","monthNum":5,"channel":"Offline","account":"Lulu","header":"Promoter","amount":20000.0,"monetary":true,"remarks":"BLR"},
+  {"month":"May","monthNum":5,"channel":"Offline","account":"Spencer's","header":"Consumer Offer","amount":0,"monetary":false,"remarks":"DPG - Buy 2 & Get Rs 5 off; DCP - Buy 3 & Get 1 Free; DCC - Buy 3 @ Rs 100; DTC - Buy 2 & Get Rs 5 off"},
+  {"month":"May","monthNum":5,"channel":"Offline","account":"Lulu","header":"Visibility","amount":20000.0,"monetary":true,"remarks":"VR Mall / BLR"},
+  {"month":"May","monthNum":5,"channel":"Offline","account":"Lulu","header":"Visibility","amount":20000.0,"monetary":true,"remarks":"M5 E City/ BLR"},
+  {"month":"May","monthNum":5,"channel":"Branding","account":"Events","header":"POSMs","amount":0,"monetary":false,"remarks":"D2C Insider - Printing"},
+  {"month":"May","monthNum":5,"channel":"Branding","account":"Events","header":"Samples","amount":0,"monetary":false,"remarks":"D2C Insider - Printing"},
+  {"month":"May","monthNum":5,"channel":"Branding","account":"Events","header":"Logistics","amount":0,"monetary":false,"remarks":null},
+  {"month":"May","monthNum":5,"channel":"Online","account":"Blinkit","header":"Consumer Offer","amount":170492.0,"monetary":true,"remarks":"Blinkit Discounts"},
+  {"month":"May","monthNum":5,"channel":"Online","account":"Zepto","header":"Consumer Offer","amount":4090.0,"monetary":true,"remarks":"Zepto Discounts"},
+  {"month":"May","monthNum":5,"channel":"Offline","account":"Lulu","header":"Consumer Offer","amount":0,"monetary":false,"remarks":"DCC- 3@100"},
+  {"month":"May","monthNum":5,"channel":"Online","account":"Blinkit","header":"Agency Fee","amount":157191.8,"monetary":true,"remarks":"Foresight Fee"},
+  {"month":"June","monthNum":6,"channel":"Online","account":"Blinkit","header":"Performance Marketing","amount":1159711.0,"monetary":true,"remarks":null},
+  {"month":"June","monthNum":6,"channel":"Online","account":"Blinkit","header":"Visibility","amount":496233.0,"monetary":true,"remarks":null},
+  {"month":"June","monthNum":6,"channel":"Online","account":"Zepto","header":"Performance Marketing","amount":102400.0,"monetary":true,"remarks":null},
+  {"month":"June","monthNum":6,"channel":"Strategic Accounts","account":"Relay","header":"Marketing/Platform Fee","amount":150000.0,"monetary":true,"remarks":null},
+  {"month":"June","monthNum":6,"channel":"Strategic Accounts","account":"Relay","header":"Promoter","amount":25000.0,"monetary":true,"remarks":null},
+  {"month":"June","monthNum":6,"channel":"Strategic Accounts","account":"Corporate Distributor","header":"Manpower - Subsidy","amount":10000.0,"monetary":true,"remarks":"Rudra1"},
+  {"month":"June","monthNum":6,"channel":"Strategic Accounts","account":"Corporate Distributor","header":"Manpower - Subsidy","amount":10000.0,"monetary":true,"remarks":"Polluxx"},
+  {"month":"June","monthNum":6,"channel":"Strategic Accounts","account":"Corporate Distributor","header":"Manpower - Subsidy","amount":10000.0,"monetary":true,"remarks":"Supreme Distributor"},
+  {"month":"June","monthNum":6,"channel":"Offline","account":"Lulu","header":"Promoter","amount":20000.0,"monetary":true,"remarks":"BLR"},
+  {"month":"June","monthNum":6,"channel":"Offline","account":"Lulu","header":"Visibility","amount":150000.0,"monetary":true,"remarks":"Coimbatore Store Launch"},
+  {"month":"June","monthNum":6,"channel":"Branding","account":"Influencer Marketing","header":"Samples","amount":2100,"monetary":true,"remarks":"DPG + DCC"},
+  {"month":"June","monthNum":6,"channel":"Branding","account":"Influencer Marketing","header":"POSMs","amount":300.0,"monetary":true,"remarks":"Leaflet for Pop Gloss Kit"},
+  {"month":"June","monthNum":6,"channel":"Branding","account":"Influencer Marketing","header":"Others","amount":3832.3,"monetary":true,"remarks":"Mocktail Accessories"},
+  {"month":"June","monthNum":6,"channel":"Branding","account":"Influencer Marketing","header":"Logistics","amount":0,"monetary":false,"remarks":null},
+  {"month":"June","monthNum":6,"channel":"Branding","account":"Meta","header":"Visibility","amount":2334.04,"monetary":true,"remarks":null},
+  {"month":"June","monthNum":6,"channel":"Offline","account":"Spencer's","header":"Consumer Offer","amount":0,"monetary":false,"remarks":"DPG - Buy 2 & Get Rs 5 off; DCP - Buy 3 & Get 1 Free; DCC - Buy 3 @ Rs 100; DTC - Buy 2 & Get Rs 5 off"},
+  {"month":"June","monthNum":6,"channel":"Online","account":"Blinkit","header":"Consumer Offer","amount":215522.0,"monetary":true,"remarks":"Blinkit Discounts"},
+  {"month":"June","monthNum":6,"channel":"Online","account":"Zepto","header":"Consumer Offer","amount":3010.0,"monetary":true,"remarks":"Zepto Discounts"},
+  {"month":"June","monthNum":6,"channel":"Online","account":"Blinkit","header":"Agency Fee","amount":228345,"monetary":true,"remarks":"Foresight Fee"},
+  {"month":"July","monthNum":7,"channel":"Strategic Accounts","account":"Relay","header":"Marketing/Platform Fee","amount":150000.0,"monetary":true,"remarks":null},
+  {"month":"July","monthNum":7,"channel":"Branding","account":"Events","header":"Samples","amount":0,"monetary":false,"remarks":"Bengaluruverse"},
+  {"month":"July","monthNum":7,"channel":"Offline","account":"Reliance","header":"Others","amount":321.0,"monetary":true,"remarks":"Sampling Jars"},
+  {"month":"July","monthNum":7,"channel":"Branding","account":"Lulu","header":"POSMs","amount":243.0,"monetary":true,"remarks":"Logistics for the Promo Tables"},
+  {"month":"July","monthNum":7,"channel":"Online","account":"Instamart","header":"Consumer Offer","amount":0,"monetary":false,"remarks":"DCC at INR 9"},
+  {"month":"July","monthNum":7,"channel":"Offline","account":"Lulu","header":"Consumer Offer","amount":0,"monetary":false,"remarks":"EOSS Sale: DPG@59, DCP@69, DCC@39, DTC@59"}
+ ],
+ "budgets": {
+  "Strategic Accounts": {"marketing":4750000,"nonMarketing":4870000,"total":9620000},
+  "Online": {"marketing":22761616,"nonMarketing":1873457.756,"total":24635073.76},
+  "Offline": {"marketing":7230000,"nonMarketing":1000000,"total":8230000},
+  "Branding": {"marketing":5096990,"nonMarketing":6900000,"total":11996990}
+ },
+ "months": ["April","May","June","July"],
+ "sourceFile": "Marketing Budget Summary FY 2026-27- FINAL.xlsx",
+ "sourceSheet": "Expense Log"
+};
+
+/* ---------------- PALETTE (validated categorical set — see dataviz skill) ---------------- */
+const CHANNELS = ["Online","Offline","Strategic Accounts","Branding"];
+const CHANNEL_COLOR = {"Online":"#2a78d6","Offline":"#eb6834","Strategic Accounts":"#1baf7a","Branding":"#eda100"};
+const CHANNEL_COLOR_DARK = {"Online":"#3987e5","Offline":"#d95926","Strategic Accounts":"#199e70","Branding":"#c98500"};
+const HEADER_ORDER = ["Performance Marketing","Visibility","Marketing/Platform Fee","Consumer Offer","Agency Fee","Promoter","Manpower - Subsidy"];
+const HEADER_COLOR = {"Performance Marketing":"#2a78d6","Visibility":"#eb6834","Marketing/Platform Fee":"#1baf7a","Consumer Offer":"#eda100","Agency Fee":"#e87ba4","Promoter":"#008300","Manpower - Subsidy":"#4a3aa7"};
+const HEADER_COLOR_DARK = {"Performance Marketing":"#3987e5","Visibility":"#d95926","Marketing/Platform Fee":"#199e70","Consumer Offer":"#c98500","Agency Fee":"#d55181","Promoter":"#008300","Manpower - Subsidy":"#9085e9"};
+const OTHER_COLOR_LIGHT = "#898781", OTHER_COLOR_DARK = "#A3A199";
+const STATUS = {good:"#0ca30c", warning:"#fab219", serious:"#ec835a", critical:"#d03b3b"};
+const FY_MONTH_INDEX = {April:1,May:2,June:3,July:4,August:5,September:6,October:7,November:8,December:9,January:10,February:11,March:12};
+
+function isDark(){
+  const attr = document.documentElement.getAttribute('data-theme');
+  if(attr==='dark') return true;
+  if(attr==='light') return false;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches;
+}
+function channelColor(ch){ return (isDark()?CHANNEL_COLOR_DARK:CHANNEL_COLOR)[ch] || OTHER_COLOR_LIGHT; }
+function headerLabel(h){ return HEADER_ORDER.includes(h) ? h : 'Other'; }
+function headerColor(h){
+  if(!HEADER_ORDER.includes(h)) return isDark()?OTHER_COLOR_DARK:OTHER_COLOR_LIGHT;
+  return (isDark()?HEADER_COLOR_DARK:HEADER_COLOR)[h];
+}
+function chartTextColor(){ return isDark() ? '#AEB9B9' : '#5B6670'; }
+function chartGridColor(){ return isDark() ? '#2c2c2a' : '#e1e0d9'; }
+
+function money(n){ return '₹'+Math.round(n||0).toLocaleString('en-IN'); }
+function pct(n){ return (n||0).toFixed(1)+'%'; }
+function slug(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''); }
+
+/* ---------------- FILTER STATE ---------------- */
+let filters = { month:'all', ovChannel:'all', ovSearch:'' };
+function rowsFor(channel){
+  return DATA.rows.filter(r =>
+    (channel==='all' || r.channel===channel) &&
+    (filters.month==='all' || r.month===filters.month)
+  );
+}
+function monetary(rows){ return rows.filter(r=>r.monetary); }
+function inKind(rows){ return rows.filter(r=>!r.monetary); }
+function sum(rows){ return rows.reduce((s,r)=>s+(r.amount||0),0); }
+
+function expectedPaceFraction(){
+  const idxs = DATA.months.map(m=>FY_MONTH_INDEX[m]);
+  return Math.max(...idxs)/12;
+}
+function paceClass(utilPct){
+  const expected = expectedPaceFraction()*100;
+  if(utilPct <= expected*1.1) return 'good';
+  if(utilPct <= expected*1.3) return 'warn';
+  return 'crit';
+}
+
+/* ---------------- SHARED UI HELPERS ---------------- */
+function kpi(label,val,sub='',cls=''){
+  return `<div class="kpi ${cls}"><div class="label">${label}</div><div class="value tabular">${val}</div>${sub?`<div class="sub">${sub}</div>`:''}</div>`;
+}
+function renderTable(id, rows, fields, headers, formatters={}){
+  const el = document.getElementById(id);
+  if(!el) return;
+  const thead = '<thead><tr>'+headers.map(h=>`<th>${h}</th>`).join('')+'</tr></thead>';
+  const tbody = '<tbody>'+rows.map(r=>{
+    return '<tr>'+fields.map(f=>{
+      if(formatters[f]) return `<td class="${f==='remarks'?'wrap':''}">${formatters[f](r)}</td>`;
+      let v = r[f];
+      if(f==='amount') return `<td class="tabular">${money(v)}</td>`;
+      if(f==='remarks') return `<td class="wrap">${v||'—'}</td>`;
+      return `<td>${v===''||v===undefined||v===null?'—':v}</td>`;
+    }).join('') + '</tr>';
+  }).join('') + '</tbody>';
+  el.innerHTML = thead+tbody;
+}
+function channelBadge(r){
+  return `<span class="badge" style="background:${channelColor(r.channel)}22;color:${channelColor(r.channel)};"><span class="swatch" style="background:${channelColor(r.channel)};"></span>${r.channel}</span>`;
+}
+function headerBadge(r){
+  const c = headerColor(r.header);
+  return `<span class="badge" style="background:${c}22;color:${c};">${r.header}</span>`;
+}
+
+let charts = {};
+function destroyChart(key){ if(charts[key]){ charts[key].destroy(); delete charts[key]; } }
+
+/* ---------------- CSV DOWNLOAD ---------------- */
+function toCSV(rows){
+  if(!rows.length) return '';
+  const cols = ['month','channel','account','header','amount','monetary','remarks'];
+  const lines = [cols.join(',')];
+  rows.forEach(r=>lines.push(cols.map(c=>JSON.stringify(r[c]??'')).join(',')));
+  return lines.join('\n');
+}
+function downloadCSV(scope){
+  let rows, name;
+  if(scope==='all'){ rows = ovFilteredTxnRows(); name='marketing_investment_all.csv'; }
+  else { rows = rowsFor(scope); name='marketing_investment_'+slug(scope)+'.csv'; }
+  const csv = toCSV(rows);
+  const blob = new Blob([csv],{type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download=name; a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* ---------------- OVERVIEW ---------------- */
+function ovFilteredTxnRows(){
+  let rows = rowsFor('all').filter(r=>filters.ovChannel==='all'||r.channel===filters.ovChannel);
+  if(filters.ovSearch){
+    const q = filters.ovSearch.toLowerCase();
+    rows = rows.filter(r => [r.account,r.header,r.remarks,r.channel,r.month].some(v=>String(v||'').toLowerCase().includes(q)));
+  }
+  return rows;
+}
+
+function renderOverview(){
+  const rows = rowsFor('all');
+  const mRows = monetary(rows);
+  const total = sum(mRows);
+  const totalBudget = Object.values(DATA.budgets).reduce((s,b)=>s+b.total,0);
+  const util = totalBudget ? total/totalBudget*100 : 0;
+  const byChannelTotal = {};
+  CHANNELS.forEach(c=>byChannelTotal[c]=sum(monetary(rows.filter(r=>r.channel===c))));
+  const topChannel = CHANNELS.reduce((a,b)=>byChannelTotal[a]>byChannelTotal[b]?a:b);
+
+  document.getElementById('ovKpis').innerHTML = `
+    ${kpi('Total Invested', money(total), mRows.length+' logged entries')}
+    ${kpi('FY 2026-27 Budget', money(totalBudget), 'all channels combined')}
+    ${kpi('Budget Utilization', pct(util), (expectedPaceFraction()*100).toFixed(0)+'% of FY elapsed', paceClass(util))}
+    ${kpi('Top Channel', topChannel, money(byChannelTotal[topChannel]))}
+    ${kpi('Channels Tracked', CHANNELS.length)}
+    ${kpi('In-kind Activities', inKind(rows).length, 'no ₹ value captured')}
+  `;
+
+  // Monthly trend stacked bar by channel
+  destroyChart('ovTrend');
+  const monthsShown = filters.month==='all' ? DATA.months : [filters.month];
+  const ctx1 = document.getElementById('ovTrend').getContext('2d');
+  charts.ovTrend = new Chart(ctx1,{type:'bar',data:{
+    labels: monthsShown,
+    datasets: CHANNELS.map(c=>({
+      label:c, backgroundColor:channelColor(c),
+      data: monthsShown.map(m=> sum(monetary(DATA.rows.filter(r=>r.channel===c && r.month===m))) )
+    }))
+  },options:{
+    plugins:{legend:{position:'bottom',labels:{color:chartTextColor(),font:{family:'Inter',size:11}}},
+      tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+money(ctx.raw)}}},
+    scales:{
+      x:{stacked:true, ticks:{color:chartTextColor()}, grid:{color:chartGridColor()}},
+      y:{stacked:true, ticks:{color:chartTextColor(), callback:v=>'₹'+(v/100000).toFixed(0)+'L'}, grid:{color:chartGridColor()}}
+    }
+  }});
+
+  // Channel donut
+  destroyChart('ovChannelDonut');
+  const ctx2 = document.getElementById('ovChannelDonut').getContext('2d');
+  charts.ovChannelDonut = new Chart(ctx2,{type:'doughnut',data:{
+    labels:CHANNELS,
+    datasets:[{data:CHANNELS.map(c=>byChannelTotal[c]), backgroundColor:CHANNELS.map(channelColor), borderWidth:2, borderColor: isDark()?'#1C2224':'#FFFFFF'}]
+  },options:{plugins:{legend:{position:'bottom',labels:{color:chartTextColor(),font:{family:'Inter',size:11}}},
+    tooltip:{callbacks:{label:ctx=>ctx.label+': '+money(ctx.raw)}}}}});
+
+  const chanRows = CHANNELS.map(c=>{
+    const actual = byChannelTotal[c];
+    const b = DATA.budgets[c].total;
+    return {channel:c, actual, budget:b, utilPct: b? actual/b*100:0};
+  });
+  renderTable('tbl-ovChannel', chanRows,
+    ['channel','actual','budget','utilPct'],
+    ['Channel','Actual','FY Budget','Utilization'],
+    {
+      channel:r=>`<span class="swatch" style="background:${channelColor(r.channel)};"></span>${r.channel}`,
+      actual:r=>money(r.actual),
+      budget:r=>money(r.budget),
+      utilPct:r=>{const cls=paceClass(r.utilPct); const col=cls==='good'?STATUS.good:cls==='warn'?STATUS.warning:STATUS.critical; return `<span style="color:${col};font-weight:600;">${pct(r.utilPct)}</span>`;}
+    });
+
+  // Header donut (global)
+  destroyChart('ovHeaderDonut');
+  const byHeader = {};
+  mRows.forEach(r=>{ const l=headerLabel(r.header); byHeader[l]=(byHeader[l]||0)+r.amount; });
+  const headerLabels = [...HEADER_ORDER.filter(h=>byHeader[h]), ...(byHeader['Other']?['Other']:[])];
+  const ctx3 = document.getElementById('ovHeaderDonut').getContext('2d');
+  charts.ovHeaderDonut = new Chart(ctx3,{type:'doughnut',data:{
+    labels:headerLabels,
+    datasets:[{data:headerLabels.map(h=>byHeader[h]), backgroundColor:headerLabels.map(h=>h==='Other'?(isDark()?OTHER_COLOR_DARK:OTHER_COLOR_LIGHT):headerColor(h)), borderWidth:2, borderColor: isDark()?'#1C2224':'#FFFFFF'}]
+  },options:{plugins:{legend:{position:'bottom',labels:{color:chartTextColor(),font:{family:'Inter',size:11}}},
+    tooltip:{callbacks:{label:ctx=>ctx.label+': '+money(ctx.raw)}}}}});
+
+  // Account-wise bar (all channels, colored by channel)
+  destroyChart('ovAccountBar');
+  const byAccount = {};
+  mRows.forEach(r=>{ const k=r.channel+'|'+r.account; if(!byAccount[k]) byAccount[k]={channel:r.channel,account:r.account,total:0}; byAccount[k].total+=r.amount; });
+  const accList = Object.values(byAccount).sort((a,b)=>b.total-a.total);
+  const ctx4 = document.getElementById('ovAccountBar').getContext('2d');
+  charts.ovAccountBar = new Chart(ctx4,{type:'bar',data:{
+    labels:accList.map(a=>a.account),
+    datasets:[{label:'Investment', data:accList.map(a=>a.total), backgroundColor:accList.map(a=>channelColor(a.channel))}]
+  },options:{indexAxis:'y',
+    plugins:{legend:{display:false}, tooltip:{callbacks:{label:ctx=>money(ctx.raw)}}},
+    scales:{
+      x:{ticks:{color:chartTextColor(), callback:v=>'₹'+(v/100000).toFixed(0)+'L'}, grid:{color:chartGridColor()}},
+      y:{ticks:{color:chartTextColor()}, grid:{display:false}}
+    }
+  }});
+  document.getElementById('ovAccountLegend').innerHTML = CHANNELS.map(c=>
+    `<span class="legend-item"><span class="swatch" style="background:${channelColor(c)};"></span>${c}</span>`).join('');
+
+  // Transactions table (with channel/search filters)
+  const populate = document.getElementById('ovTxnChannel');
+  if(populate.options.length<=1){
+    CHANNELS.forEach(c=>{ const o=document.createElement('option'); o.value=c; o.textContent=c; populate.appendChild(o); });
+  }
+  const txnRows = ovFilteredTxnRows().slice().sort((a,b)=>b.monthNum-a.monthNum);
+  renderTable('tbl-ovTxn', txnRows,
+    ['month','channel','account','header','amount','remarks'],
+    ['Month','Channel','Account','Expense Header','Amount','Remarks'],
+    {channel:channelBadge, header:headerBadge, amount:r=>r.monetary?money(r.amount):'<span class="badge" style="background:var(--surface-alt);color:var(--ink-faint);">In-kind</span>'});
+
+  renderTable('tbl-ovInkind', inKind(rows),
+    ['month','channel','account','header','remarks'],
+    ['Month','Channel','Account','Expense Header','Details'],
+    {channel:channelBadge, header:headerBadge});
+}
+
+/* ---------------- CHANNEL VIEWS ---------------- */
+function renderChannel(channel){
+  const rows = rowsFor(channel);
+  const mRows = monetary(rows);
+  const total = sum(mRows);
+  const budget = DATA.budgets[channel];
+  const util = budget.total ? total/budget.total*100 : 0;
+  const accounts = [...new Set(rows.map(r=>r.account))];
+  const byAccount = {};
+  mRows.forEach(r=>{ byAccount[r.account]=(byAccount[r.account]||0)+r.amount; });
+  const topAccount = accounts.length ? accounts.reduce((a,b)=>(byAccount[a]||0)>(byAccount[b]||0)?a:b) : '—';
+  const monthsActive = new Set(mRows.map(r=>r.month)).size;
+  const col = channelColor(channel);
+  const s = slug(channel);
+
+  document.getElementById('kpis-'+s).innerHTML = `
+    ${kpi('Total Invested', money(total), mRows.length+' logged entries')}
+    ${kpi('FY Budget', money(budget.total), 'Mktg '+money(budget.marketing)+' + Non-mktg '+money(budget.nonMarketing))}
+    ${kpi('Budget Utilization', pct(util), (expectedPaceFraction()*100).toFixed(0)+'% of FY elapsed', paceClass(util))}
+    ${kpi('Accounts', accounts.length, accounts.join(', '))}
+    ${kpi('Top Account', topAccount, money(byAccount[topAccount]||0))}
+    ${kpi('Months Active', monthsActive+' / '+DATA.months.length)}
+  `;
+
+  destroyChart('trend-'+s);
+  const monthsShown = filters.month==='all' ? DATA.months : [filters.month];
+  const ctxT = document.getElementById('trend-'+s).getContext('2d');
+  charts['trend-'+s] = new Chart(ctxT,{type:'bar',data:{
+    labels:monthsShown,
+    datasets:[{label:channel, backgroundColor:col, data:monthsShown.map(m=>sum(monetary(DATA.rows.filter(r=>r.channel===channel && r.month===m))))}]
+  },options:{
+    plugins:{legend:{display:false}, tooltip:{callbacks:{label:ctx=>money(ctx.raw)}}},
+    scales:{
+      x:{ticks:{color:chartTextColor()}, grid:{color:chartGridColor()}},
+      y:{ticks:{color:chartTextColor(), callback:v=>'₹'+(v/1000).toFixed(0)+'K'}, grid:{color:chartGridColor()}}
+    }
+  }});
+
+  destroyChart('acct-'+s);
+  const accList = Object.entries(byAccount).sort((a,b)=>b[1]-a[1]);
+  const ctxA = document.getElementById('acct-'+s).getContext('2d');
+  charts['acct-'+s] = new Chart(ctxA,{type:'bar',data:{
+    labels:accList.map(a=>a[0]),
+    datasets:[{label:'Investment', backgroundColor:col, data:accList.map(a=>a[1])}]
+  },options:{indexAxis:'y',
+    plugins:{legend:{display:false}, tooltip:{callbacks:{label:ctx=>money(ctx.raw)}}},
+    scales:{
+      x:{ticks:{color:chartTextColor(), callback:v=>'₹'+(v/1000).toFixed(0)+'K'}, grid:{color:chartGridColor()}},
+      y:{ticks:{color:chartTextColor()}, grid:{display:false}}
+    }
+  }});
+
+  destroyChart('hdr-'+s);
+  const byHeader = {};
+  mRows.forEach(r=>{ const l=headerLabel(r.header); byHeader[l]=(byHeader[l]||0)+r.amount; });
+  const headerLabels = [...HEADER_ORDER.filter(h=>byHeader[h]), ...(byHeader['Other']?['Other']:[])];
+  const ctxH = document.getElementById('hdr-'+s).getContext('2d');
+  charts['hdr-'+s] = new Chart(ctxH,{type:'doughnut',data:{
+    labels:headerLabels,
+    datasets:[{data:headerLabels.map(h=>byHeader[h]), backgroundColor:headerLabels.map(h=>h==='Other'?(isDark()?OTHER_COLOR_DARK:OTHER_COLOR_LIGHT):headerColor(h)), borderWidth:2, borderColor: isDark()?'#1C2224':'#FFFFFF'}]
+  },options:{plugins:{legend:{position:'bottom',labels:{color:chartTextColor(),font:{family:'Inter',size:11}}},
+    tooltip:{callbacks:{label:ctx=>ctx.label+': '+money(ctx.raw)}}}}});
+
+  const detailRows = rows.slice().sort((a,b)=>b.monthNum-a.monthNum);
+  renderTable('tbl-detail-'+s, detailRows,
+    ['month','account','header','amount','remarks'],
+    ['Month','Account','Expense Header','Amount','Remarks'],
+    {header:headerBadge, amount:r=>r.monetary?money(r.amount):'<span class="badge" style="background:var(--surface-alt);color:var(--ink-faint);">In-kind</span>'});
+
+  const inkindRows = inKind(rows);
+  const inkindPanel = document.getElementById('panel-inkind-'+s);
+  if(inkindRows.length){
+    inkindPanel.style.display='';
+    renderTable('tbl-inkind-'+s, inkindRows, ['month','account','header','remarks'], ['Month','Account','Expense Header','Details'], {header:headerBadge});
+  } else {
+    inkindPanel.style.display='none';
+  }
+}
+
+/* ---------------- VIEW SCAFFOLDING ---------------- */
+function channelViewHTML(channel){
+  const s = slug(channel);
+  return `
+    <div class="kpi-row" id="kpis-${s}"></div>
+    <div class="panel">
+      <div class="panel-head"><h3>Monthly Investment</h3><span class="hint">Logged amount, ₹</span></div>
+      <canvas id="trend-${s}" class="barcanvas-tall"></canvas>
+    </div>
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-head"><h3>Account-wise Investment</h3></div>
+        <canvas id="acct-${s}" class="barcanvas-tall"></canvas>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h3>Expense Type Mix</h3></div>
+        <canvas id="hdr-${s}"></canvas>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head">
+        <h3>Transaction Detail</h3>
+        <button class="btn ghost" onclick="downloadCSV('${channel}')">Download CSV</button>
+      </div>
+      <div class="table-wrap"><table id="tbl-detail-${s}"></table></div>
+    </div>
+    <div class="panel" id="panel-inkind-${s}">
+      <div class="panel-head"><h3>Non-Monetary / In-Kind Activities</h3><span class="hint">Logged with no captured ₹ value</span></div>
+      <div class="table-wrap"><table id="tbl-inkind-${s}"></table></div>
+    </div>
+  `;
+}
+
+const TITLES = { overview: ['Overview','All channels combined — investment, budget utilization and expense mix at a glance.'] };
+CHANNELS.forEach(c=>{ TITLES[slug(c)] = [c, c+' — monthly investment, account split, expense mix and full transaction detail.']; });
+
+function buildNav(){
+  const navChannels = document.getElementById('navChannels');
+  navChannels.innerHTML = CHANNELS.map(c=>
+    `<div class="nav-item" data-view="${slug(c)}"><span class="dot" style="background:${channelColor(c)};"></span>${c}</div>`
+  ).join('');
+
+  const main = document.querySelector('.main');
+  CHANNELS.forEach(c=>{
+    const s = slug(c);
+    const div = document.createElement('div');
+    div.className = 'view';
+    div.id = 'view-'+s;
+    div.innerHTML = channelViewHTML(c);
+    main.appendChild(div);
+  });
+
+  document.querySelectorAll('.nav-item').forEach(item=>{
+    item.addEventListener('click', ()=>{
+      document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+      item.classList.add('active');
+      const v = item.dataset.view;
+      document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+      document.getElementById('view-'+v).classList.add('active');
+      document.getElementById('viewTitle').textContent = TITLES[v][0];
+      document.getElementById('viewDesc').textContent = TITLES[v][1];
+      renderAll();
+    });
+  });
+}
+
+function buildMonthFilter(){
+  const sel = document.getElementById('fMonth');
+  DATA.months.forEach(m=>{ const o=document.createElement('option'); o.value=m; o.textContent=m; sel.appendChild(o); });
+  sel.addEventListener('change', e=>{ filters.month=e.target.value; renderAll(); });
+}
+
+function renderAll(){
+  renderOverview();
+  CHANNELS.forEach(c=>renderChannel(c));
+}
+
+document.getElementById('ovTxnChannel')?.addEventListener('change', e=>{ filters.ovChannel=e.target.value; renderOverview(); });
+document.addEventListener('input', e=>{
+  if(e.target.id==='ovTxnSearch'){ filters.ovSearch = e.target.value; renderOverview(); }
+});
+
+buildNav();
+buildMonthFilter();
+document.getElementById('sideFoot').innerHTML =
+  'Source: '+DATA.sourceFile+'<br>Sheet: "'+DATA.sourceSheet+'"<br>Months logged: '+DATA.months.join(', ');
+
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', renderAll);
+
+renderAll();
+</script>
+
+</body>
+</html>
