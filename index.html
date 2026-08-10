@@ -14,16 +14,16 @@
     --surface-alt:#E7EAEC;
     --border:#DBE0E3;
     --ink:#12181A;
-    --ink-soft:#5B6670;
-    --ink-faint:#8A949B;
-    --accent:#0F3D3E;
-    --accent-soft:#E4EEED;
-    --green:#0ca30c;
-    --green-soft:#E4F2EB;
+    --ink-soft:#58595B;
+    --ink-faint:#808184;
+    --accent:#25256A;
+    --accent-soft:#E9EAF3;
+    --green:#009649;
+    --green-soft:#DFF2E8;
     --amber:#C77D02;
     --amber-soft:#FBF0DC;
-    --red:#d03b3b;
-    --red-soft:#FBEAE8;
+    --red:#EC1C24;
+    --red-soft:#FDE6E7;
     --grid:#e1e0d9;
     --radius:10px;
     color-scheme: light;
@@ -37,13 +37,13 @@
       --ink:#F2F5F5;
       --ink-soft:#AEB9B9;
       --ink-faint:#7C8A8A;
-      --accent:#3FA79A;
-      --accent-soft:#1B3230;
-      --green:#0ca30c;
+      --accent:#33408A;
+      --accent-soft:#1E2340;
+      --green:#3DBE7A;
       --green-soft:#173322;
       --amber:#fab219;
       --amber-soft:#3A2D10;
-      --red:#e66767;
+      --red:#F0555C;
       --red-soft:#3A1E1E;
       --grid:#2c2c2a;
       color-scheme: dark;
@@ -57,13 +57,13 @@
     --ink:#F2F5F5;
     --ink-soft:#AEB9B9;
     --ink-faint:#7C8A8A;
-    --accent:#3FA79A;
-    --accent-soft:#1B3230;
-    --green:#0ca30c;
+    --accent:#33408A;
+    --accent-soft:#1E2340;
+    --green:#3DBE7A;
     --green-soft:#173322;
     --amber:#fab219;
     --amber-soft:#3A2D10;
-    --red:#e66767;
+    --red:#F0555C;
     --red-soft:#3A1E1E;
     --grid:#2c2c2a;
     color-scheme: dark;
@@ -85,29 +85,29 @@
   /* SIDEBAR */
   .sidebar{
     background:var(--accent);
-    color:#EAF2F1;
+    color:#E8ECF7;
     padding:22px 16px;
     display:flex;flex-direction:column;
     position:sticky;top:0;height:100vh;
     overflow-y:auto;
   }
   .brand{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
-  .brand-mark{width:10px;height:10px;border-radius:50%;background:#7FD8B6;box-shadow:0 0 0 3px rgba(127,216,182,0.2);}
+  .brand-mark{width:10px;height:10px;border-radius:50%;background:#99D8E9;box-shadow:0 0 0 3px rgba(153,216,233,0.25);}
   .brand h1{font-size:15px;letter-spacing:0.03em;margin:0;font-weight:700;}
-  .brand-sub{font-size:11px;color:#9FC3BC;margin:0 0 26px 0;letter-spacing:0.04em;text-transform:uppercase;}
+  .brand-sub{font-size:11px;color:#92A4D9;margin:0 0 26px 0;letter-spacing:0.04em;text-transform:uppercase;}
   .nav{display:flex;flex-direction:column;gap:4px;margin-bottom:14px;}
-  .nav-label{font-size:10.5px;color:#7FA39B;text-transform:uppercase;letter-spacing:.06em;margin:10px 4px 4px;}
+  .nav-label{font-size:10.5px;color:#8A9BD4;text-transform:uppercase;letter-spacing:.06em;margin:10px 4px 4px;}
   .nav-item{
     display:flex;align-items:center;gap:10px;
     padding:10px 12px;border-radius:8px;cursor:pointer;
-    color:#C9DEDA;font-size:13px;font-weight:500;
+    color:#C7D0EF;font-size:13px;font-weight:500;
     border:1px solid transparent;
     transition:background .15s ease;
   }
-  .nav-item .dot{width:8px;height:8px;border-radius:50%;background:#5B8B84;flex-shrink:0;}
+  .nav-item .dot{width:8px;height:8px;border-radius:50%;background:#5568A8;flex-shrink:0;}
   .nav-item:hover{background:rgba(255,255,255,0.06);}
   .nav-item.active{background:rgba(255,255,255,0.1);color:#fff;border-color:rgba(255,255,255,0.12);}
-  .side-foot{font-size:11px;color:#7FA39B;line-height:1.5;border-top:1px solid rgba(255,255,255,0.12);padding-top:14px;margin-top:auto;}
+  .side-foot{font-size:11px;color:#8A9BD4;line-height:1.5;border-top:1px solid rgba(255,255,255,0.12);padding-top:14px;margin-top:auto;}
 
   /* MAIN */
   .main{padding:24px 28px 60px 28px;max-width:1440px;}
@@ -136,7 +136,7 @@
   .kpi .sub{font-size:11.5px;color:var(--ink-faint);margin-top:6px;}
   .kpi.warn{border-color:#EFD3A0;}
   .kpi.warn .value{color:var(--amber);}
-  .kpi.crit{border-color:#E7B6B0;}
+  .kpi.crit{border-color:#F3B7B9;}
   .kpi.crit .value{color:var(--red);}
   .kpi.good .value{color:var(--green);}
 
@@ -153,7 +153,7 @@
     padding:8px 14px;font-size:12.5px;font-weight:600;cursor:pointer;
     display:inline-flex;align-items:center;gap:6px;
   }
-  .btn:hover{background:#0B2E2F;}
+  .btn:hover{background:#1A1A52;}
   .btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent);}
   .btn.ghost:hover{background:var(--accent-soft);}
 
@@ -192,7 +192,7 @@
     <div class="brand"><div class="brand-mark"></div><h1>MARKETING<br>INVESTMENT</h1></div>
     <div class="brand-sub">FY 2026-27 &middot; Expense Log</div>
     <div class="nav" id="nav">
-      <div class="nav-item active" data-view="overview"><span class="dot" style="background:#7FD8B6;"></span>Overview</div>
+      <div class="nav-item active" data-view="overview"><span class="dot" style="background:#99D8E9;"></span>Overview</div>
     </div>
     <div class="nav-label">Channels</div>
     <div class="nav" id="navChannels"></div>
@@ -999,13 +999,13 @@ const DATA = {
 
 /* ---------------- PALETTE (validated categorical set — see dataviz skill) ---------------- */
 const CHANNELS = ["Online","Offline","Strategic Accounts","Branding"];
-const CHANNEL_COLOR = {"Online":"#2a78d6","Offline":"#eb6834","Strategic Accounts":"#1baf7a","Branding":"#eda100"};
-const CHANNEL_COLOR_DARK = {"Online":"#3987e5","Offline":"#d95926","Strategic Accounts":"#199e70","Branding":"#c98500"};
+const CHANNEL_COLOR = {"Online":"#0071BB","Offline":"#E8881C","Strategic Accounts":"#924D9D","Branding":"#007a3d"};
+const CHANNEL_COLOR_DARK = {"Online":"#4B99CE","Offline":"#C97F35","Strategic Accounts":"#9B5FAF","Branding":"#2CA872"};
 const HEADER_ORDER = ["Performance Marketing","Visibility","Marketing/Platform Fee","Consumer Offer","Agency Fee","Promoter","Manpower - Subsidy"];
-const HEADER_COLOR = {"Performance Marketing":"#2a78d6","Visibility":"#eb6834","Marketing/Platform Fee":"#1baf7a","Consumer Offer":"#eda100","Agency Fee":"#e87ba4","Promoter":"#008300","Manpower - Subsidy":"#4a3aa7"};
-const HEADER_COLOR_DARK = {"Performance Marketing":"#3987e5","Visibility":"#d95926","Marketing/Platform Fee":"#199e70","Consumer Offer":"#c98500","Agency Fee":"#d55181","Promoter":"#008300","Manpower - Subsidy":"#9085e9"};
+const HEADER_COLOR = {"Performance Marketing":"#0071BB","Visibility":"#E8881C","Marketing/Platform Fee":"#924D9D","Consumer Offer":"#007a3d","Agency Fee":"#43439C","Promoter":"#B8860B","Manpower - Subsidy":"#C0568C"};
+const HEADER_COLOR_DARK = {"Performance Marketing":"#4B99CE","Visibility":"#C97F35","Marketing/Platform Fee":"#B37DC2","Consumer Offer":"#2CA872","Agency Fee":"#7676C7","Promoter":"#B08018","Manpower - Subsidy":"#CB6A9C"};
 const OTHER_COLOR_LIGHT = "#898781", OTHER_COLOR_DARK = "#A3A199";
-const STATUS = {good:"#0ca30c", warning:"#fab219", serious:"#ec835a", critical:"#d03b3b"};
+const STATUS = {good:"#009649", warning:"#C77D02", serious:"#ec835a", critical:"#EC1C24"};
 const FY_MONTH_INDEX = {April:1,May:2,June:3,July:4,August:5,September:6,October:7,November:8,December:9,January:10,February:11,March:12};
 
 function isDark(){
@@ -1020,7 +1020,7 @@ function headerColor(h){
   if(!HEADER_ORDER.includes(h)) return isDark()?OTHER_COLOR_DARK:OTHER_COLOR_LIGHT;
   return (isDark()?HEADER_COLOR_DARK:HEADER_COLOR)[h];
 }
-function chartTextColor(){ return isDark() ? '#AEB9B9' : '#5B6670'; }
+function chartTextColor(){ return isDark() ? '#AEB9B9' : '#58595B'; }
 function chartGridColor(){ return isDark() ? '#2c2c2a' : '#e1e0d9'; }
 
 function money(n){ return '₹'+Math.round(n||0).toLocaleString('en-IN'); }
