@@ -107,6 +107,16 @@
   .nav-item .dot{width:8px;height:8px;border-radius:50%;background:#5568A8;flex-shrink:0;}
   .nav-item:hover{background:rgba(255,255,255,0.06);}
   .nav-item.active{background:rgba(255,255,255,0.1);color:#fff;border-color:rgba(255,255,255,0.12);}
+  .nav-subitem{
+    display:flex;align-items:center;gap:8px;
+    padding:7px 12px 7px 28px;border-radius:7px;cursor:pointer;
+    color:#AAB4DE;font-size:12px;font-weight:500;
+    border:1px solid transparent;
+    transition:background .15s ease;
+  }
+  .nav-subitem .dot{width:6px;height:6px;border-radius:50%;background:#5568A8;flex-shrink:0;}
+  .nav-subitem:hover{background:rgba(255,255,255,0.06);}
+  .nav-subitem.active{background:rgba(255,255,255,0.1);color:#fff;border-color:rgba(255,255,255,0.12);}
   .side-foot{font-size:11px;color:#8A9BD4;line-height:1.5;border-top:1px solid rgba(255,255,255,0.12);padding-top:14px;margin-top:auto;}
 
   /* MAIN */
@@ -243,7 +253,7 @@
           <div class="filters">
             <select id="ovTxnChannel"><option value="all">All channels</option></select>
             <input type="text" id="ovTxnSearch" placeholder="Search account, header, remarks…">
-            <button class="btn ghost" onclick="downloadCSV('all')">Download CSV</button>
+            <button class="btn ghost" data-dl-channel="all">Download CSV</button>
           </div>
         </div>
         <div class="table-wrap"><table id="tbl-ovTxn"></table></div>
@@ -340,9 +350,9 @@ const DATA = {
    "channel": "Strategic Accounts",
    "account": "Relay",
    "header": "Promoter",
-   "amount": 25000.0,
+   "amount": 23573.0,
    "monetary": true,
-   "remarks": null
+   "remarks": "CTC (in hand = 17000)"
   },
   {
    "month": "April",
@@ -378,17 +388,7 @@ const DATA = {
    "month": "April",
    "monthNum": 4,
    "channel": "Offline",
-   "account": "Lulu",
-   "header": "Promoter",
-   "amount": 20000.0,
-   "monetary": true,
-   "remarks": "BLR"
-  },
-  {
-   "month": "April",
-   "monthNum": 4,
-   "channel": "Offline",
-   "account": "Spencer's",
+   "account": "Spencers",
    "header": "Consumer Offer",
    "amount": 0,
    "monetary": false,
@@ -530,9 +530,9 @@ const DATA = {
    "channel": "Strategic Accounts",
    "account": "Relay",
    "header": "Promoter",
-   "amount": 25000.0,
+   "amount": 23573.0,
    "monetary": true,
-   "remarks": null
+   "remarks": "CTC (in hand = 17000)"
   },
   {
    "month": "May",
@@ -607,16 +607,6 @@ const DATA = {
   {
    "month": "May",
    "monthNum": 5,
-   "channel": "Offline",
-   "account": "Lulu",
-   "header": "Promoter",
-   "amount": 20000.0,
-   "monetary": true,
-   "remarks": "BLR"
-  },
-  {
-   "month": "May",
-   "monthNum": 5,
    "channel": "Branding",
    "account": "Branding",
    "header": "Photography",
@@ -628,7 +618,7 @@ const DATA = {
    "month": "May",
    "monthNum": 5,
    "channel": "Offline",
-   "account": "Spencer's",
+   "account": "Spencers",
    "header": "Consumer Offer",
    "amount": 0,
    "monetary": false,
@@ -770,9 +760,9 @@ const DATA = {
    "channel": "Strategic Accounts",
    "account": "Relay",
    "header": "Promoter",
-   "amount": 25000.0,
+   "amount": 23573.0,
    "monetary": true,
-   "remarks": null
+   "remarks": "CTC (in hand = 17000)"
   },
   {
    "month": "June",
@@ -813,16 +803,6 @@ const DATA = {
    "amount": 10000.0,
    "monetary": true,
    "remarks": "Supreme Distributor"
-  },
-  {
-   "month": "June",
-   "monthNum": 6,
-   "channel": "Offline",
-   "account": "Lulu",
-   "header": "Promoter",
-   "amount": 20000.0,
-   "monetary": true,
-   "remarks": "BLR"
   },
   {
    "month": "June",
@@ -888,7 +868,7 @@ const DATA = {
    "month": "June",
    "monthNum": 6,
    "channel": "Offline",
-   "account": "Spencer's",
+   "account": "Spencers",
    "header": "Consumer Offer",
    "amount": 0,
    "monetary": false,
@@ -1083,6 +1063,26 @@ const DATA = {
    "amount": 5676.0,
    "monetary": true,
    "remarks": null
+  },
+  {
+   "month": "July",
+   "monthNum": 7,
+   "channel": "Offline",
+   "account": "Lulu",
+   "header": "Promoter",
+   "amount": 24000.0,
+   "monetary": true,
+   "remarks": "BLR (in hand) 0 CTC - 27900"
+  },
+  {
+   "month": "July",
+   "monthNum": 7,
+   "channel": "Strategic Accounts",
+   "account": "Relay",
+   "header": "Promoter",
+   "amount": 23573.0,
+   "monetary": true,
+   "remarks": "CTC (in hand = 17000)"
   }
  ],
  "budgets": {
@@ -1105,6 +1105,54 @@ const DATA = {
    "marketing": 5096990,
    "nonMarketing": 6900000,
    "total": 11996990
+  }
+ },
+ "accountBudgets": {
+  "Strategic Accounts": {
+   "Relay": 1850000,
+   "CCD": 1000000,
+   "Lite Bite": 400000,
+   "Vendiman": 300000,
+   "Corporate Distributor": 2190000,
+   "Imagica": 0,
+   "IRHPL": 480000,
+   "TFS": 1500000,
+   "Adani": 700000,
+   "Barista": 600000,
+   "Aurigans India": 100000,
+   "Gifting/ Weddings": 200000
+  },
+  "Offline": {
+   "Lulu": 3530000,
+   "Reliance": 2000000,
+   "Reliance Signature": 150000,
+   "Reliance Smart": 1000000,
+   "Spencers": 700000,
+   "Nature's Basket": 300000,
+   "D Mart": 0,
+   "Namdhari's": 100000,
+   "Loyal World": 100000,
+   "Magson": 500000,
+   "Pothy's": 0,
+   "Ajfan": 0,
+   "Dorabjee": 0,
+   "Qmart": 0,
+   "Other RMTs": 0,
+   "GTs": 800000
+  },
+  "Online": {
+   "Blinkit": 19220000,
+   "Zepto": 1810126,
+   "Instamart": 356290,
+   "Amazon": 200000,
+   "Website": 125200,
+   "BigBasket": 200000,
+   "BB Instant": 150000,
+   "Flipkart Minutes": 200000,
+   "Kuiklo": 50000,
+   "Milk Basket": 100000,
+   "Jio Mart": 100000,
+   "Cred": 300000
   }
  },
  "months": [
@@ -1208,9 +1256,10 @@ function toCSV(rows){
   rows.forEach(r=>lines.push(cols.map(c=>JSON.stringify(r[c]??'')).join(',')));
   return lines.join('\n');
 }
-function downloadCSV(scope){
+function downloadCSV(scope, account){
   let rows, name;
   if(scope==='all'){ rows = ovFilteredTxnRows(); name='marketing_investment_all.csv'; }
+  else if(account){ rows = rowsFor(scope).filter(r=>r.account===account); name='marketing_investment_'+slug(scope)+'_'+slug(account)+'.csv'; }
   else { rows = rowsFor(scope); name='marketing_investment_'+slug(scope)+'.csv'; }
   const csv = toCSV(rows);
   const blob = new Blob([csv],{type:'text/csv'});
@@ -1379,18 +1428,41 @@ function renderChannel(channel){
   }});
 
   destroyChart('acct-'+s);
-  const accList = Object.entries(byAccount).sort((a,b)=>b[1]-a[1]);
+  const budgetMap = DATA.accountBudgets[channel] || {};
+  const acctSet = new Set([...Object.keys(budgetMap), ...Object.keys(byAccount)]);
+  const acctRows = [...acctSet].map(a=>{
+    const budget = budgetMap[a] || 0;
+    const spend = byAccount[a] || 0;
+    return {account:a, budget, spend, utilPct: budget ? spend/budget*100 : (spend?Infinity:0)};
+  }).sort((a,b)=> b.budget-a.budget || b.spend-a.spend);
   const ctxA = document.getElementById('acct-'+s).getContext('2d');
   charts['acct-'+s] = new Chart(ctxA,{type:'bar',data:{
-    labels:accList.map(a=>a[0]),
-    datasets:[{label:'Investment', backgroundColor:col, data:accList.map(a=>a[1])}]
+    labels:acctRows.map(a=>a.account),
+    datasets:[
+      {label:'FY Budget', backgroundColor:col+'40', data:acctRows.map(a=>a.budget)},
+      {label:'Spend to Date', backgroundColor:col, data:acctRows.map(a=>a.spend)}
+    ]
   },options:{indexAxis:'y',
-    plugins:{legend:{display:false}, tooltip:{callbacks:{label:ctx=>money(ctx.raw)}}},
+    plugins:{legend:{position:'bottom',labels:{color:chartTextColor(),font:{family:'Inter',size:11}}},
+      tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+money(ctx.raw)}}},
     scales:{
       x:{ticks:{color:chartTextColor(), callback:v=>'₹'+(v/1000).toFixed(0)+'K'}, grid:{color:chartGridColor()}},
       y:{ticks:{color:chartTextColor()}, grid:{display:false}}
     }
   }});
+
+  renderTable('tbl-acctbudget-'+s, acctRows,
+    ['account','budget','spend','utilPct'],
+    ['Account','FY Budget','Spend to Date','Utilization'],
+    {
+      budget:r=>money(r.budget),
+      spend:r=>money(r.spend),
+      utilPct:r=>{
+        if(!r.budget) return r.spend ? `<span style="color:${STATUS.warning};font-weight:600;">No budget</span>` : '—';
+        const cls=paceClass(r.utilPct); const c=cls==='good'?STATUS.good:cls==='warn'?STATUS.warning:STATUS.critical;
+        return `<span style="color:${c};font-weight:600;">${pct(r.utilPct)}</span>`;
+      }
+    });
 
   destroyChart('hdr-'+s);
   const byHeader = {};
@@ -1430,7 +1502,7 @@ function channelViewHTML(channel){
     </div>
     <div class="grid-2">
       <div class="panel">
-        <div class="panel-head"><h3>Account-wise Investment</h3></div>
+        <div class="panel-head"><h3>Account-wise Budget vs Spend</h3><span class="hint">FY 2026-27</span></div>
         <canvas id="acct-${s}" class="barcanvas-tall"></canvas>
       </div>
       <div class="panel">
@@ -1439,9 +1511,13 @@ function channelViewHTML(channel){
       </div>
     </div>
     <div class="panel">
+      <div class="panel-head"><h3>Account Budget Detail</h3><span class="hint">FY 2026-27 annual budget vs spend to date</span></div>
+      <div class="table-wrap" style="max-height:none;"><table id="tbl-acctbudget-${s}"></table></div>
+    </div>
+    <div class="panel">
       <div class="panel-head">
         <h3>Transaction Detail</h3>
-        <button class="btn ghost" onclick="downloadCSV('${channel}')">Download CSV</button>
+        <button class="btn ghost" data-dl-channel="${channel}">Download CSV</button>
       </div>
       <div class="table-wrap"><table id="tbl-detail-${s}"></table></div>
     </div>
@@ -1452,14 +1528,115 @@ function channelViewHTML(channel){
   `;
 }
 
+/* ---------------- ACCOUNT VIEWS (drill-down from a channel's key-account list) ---------------- */
+function acctSlug(channel, account){ return slug(channel)+'__'+slug(account); }
+
+function renderAccountView(channel, account){
+  const as = acctSlug(channel, account);
+  if(!document.getElementById('kpis-'+as)) return;
+  const rows = rowsFor(channel).filter(r=>r.account===account);
+  const mRows = monetary(rows);
+  const total = sum(mRows);
+  const budget = (DATA.accountBudgets[channel]||{})[account] || 0;
+  const util = budget ? total/budget*100 : 0;
+  const monthsActive = new Set(mRows.map(r=>r.month)).size;
+  const col = channelColor(channel);
+
+  const byHeader = {};
+  mRows.forEach(r=>{ const l=headerLabel(r.header); byHeader[l]=(byHeader[l]||0)+r.amount; });
+  const topHeaderEntries = Object.entries(byHeader).sort((a,b)=>b[1]-a[1]);
+  const topHeader = topHeaderEntries.length ? topHeaderEntries[0][0] : '—';
+
+  document.getElementById('kpis-'+as).innerHTML = `
+    ${kpi('Spend to Date', money(total), mRows.length+' logged entries')}
+    ${kpi('FY Budget', money(budget), budget ? '' : 'not in current budget sheet')}
+    ${kpi('Budget Utilization', budget?pct(util):'—', budget?(expectedPaceFraction()*100).toFixed(0)+'% of FY elapsed':'', budget?paceClass(util):'')}
+    ${kpi('Top Expense Header', topHeader)}
+    ${kpi('Months Active', monthsActive+' / '+DATA.months.length)}
+  `;
+
+  destroyChart('trend-'+as);
+  const monthsShown = filters.month==='all' ? DATA.months : [filters.month];
+  const ctxT = document.getElementById('trend-'+as).getContext('2d');
+  charts['trend-'+as] = new Chart(ctxT,{type:'bar',data:{
+    labels:monthsShown,
+    datasets:[{label:account, backgroundColor:col, data:monthsShown.map(m=>sum(monetary(DATA.rows.filter(r=>r.channel===channel && r.account===account && r.month===m))))}]
+  },options:{
+    plugins:{legend:{display:false}, tooltip:{callbacks:{label:ctx=>money(ctx.raw)}}},
+    scales:{
+      x:{ticks:{color:chartTextColor()}, grid:{color:chartGridColor()}},
+      y:{ticks:{color:chartTextColor(), callback:v=>'₹'+(v/1000).toFixed(0)+'K'}, grid:{color:chartGridColor()}}
+    }
+  }});
+
+  destroyChart('hdr-'+as);
+  const headerLabels = [...HEADER_ORDER.filter(h=>byHeader[h]), ...(byHeader['Other']?['Other']:[])];
+  const ctxH = document.getElementById('hdr-'+as).getContext('2d');
+  charts['hdr-'+as] = new Chart(ctxH,{type:'doughnut',data:{
+    labels:headerLabels,
+    datasets:[{data:headerLabels.map(h=>byHeader[h]), backgroundColor:headerLabels.map(h=>h==='Other'?(isDark()?OTHER_COLOR_DARK:OTHER_COLOR_LIGHT):headerColor(h)), borderWidth:2, borderColor: isDark()?'#1C2224':'#FFFFFF'}]
+  },options:{plugins:{legend:{position:'bottom',labels:{color:chartTextColor(),font:{family:'Inter',size:11}}},
+    tooltip:{callbacks:{label:ctx=>ctx.label+': '+money(ctx.raw)}}}}});
+
+  const detailRows = rows.slice().sort((a,b)=>b.monthNum-a.monthNum);
+  renderTable('tbl-detail-'+as, detailRows,
+    ['month','header','amount','remarks'],
+    ['Month','Expense Header','Amount','Remarks'],
+    {header:headerBadge, amount:r=>r.monetary?money(r.amount):'<span class="badge" style="background:var(--surface-alt);color:var(--ink-faint);">In-kind</span>'});
+
+  const inkindRows = inKind(rows);
+  const inkindPanel = document.getElementById('panel-inkind-'+as);
+  if(inkindRows.length){
+    inkindPanel.style.display='';
+    renderTable('tbl-inkind-'+as, inkindRows, ['month','header','remarks'], ['Month','Expense Header','Details'], {header:headerBadge});
+  } else {
+    inkindPanel.style.display='none';
+  }
+}
+
+function accountViewHTML(channel, account){
+  const as = acctSlug(channel, account);
+  return `
+    <div class="kpi-row" id="kpis-${as}"></div>
+    <div class="panel">
+      <div class="panel-head"><h3>Monthly Spend</h3><span class="hint">Logged amount, ₹</span></div>
+      <canvas id="trend-${as}" class="barcanvas-tall"></canvas>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><h3>Expense Type Mix</h3></div>
+      <canvas id="hdr-${as}"></canvas>
+    </div>
+    <div class="panel">
+      <div class="panel-head">
+        <h3>Transaction Detail</h3>
+        <button class="btn ghost" data-dl-channel="${channel}" data-dl-account="${account}">Download CSV</button>
+      </div>
+      <div class="table-wrap"><table id="tbl-detail-${as}"></table></div>
+    </div>
+    <div class="panel" id="panel-inkind-${as}">
+      <div class="panel-head"><h3>Non-Monetary / In-Kind Activities</h3><span class="hint">Logged with no captured ₹ value</span></div>
+      <div class="table-wrap"><table id="tbl-inkind-${as}"></table></div>
+    </div>
+  `;
+}
+
 const TITLES = { overview: ['Overview','All channels combined — investment, budget utilization and expense mix at a glance.'] };
-CHANNELS.forEach(c=>{ TITLES[slug(c)] = [c, c+' — monthly investment, account split, expense mix and full transaction detail.']; });
+CHANNELS.forEach(c=>{
+  TITLES[slug(c)] = [c, c+' — monthly investment, account split, expense mix and full transaction detail.'];
+  Object.keys(DATA.accountBudgets[c]||{}).forEach(a=>{
+    TITLES[acctSlug(c,a)] = [a, c+' · '+a+' — FY budget vs spend to date, monthly trend and transaction detail.'];
+  });
+});
 
 function buildNav(){
   const navChannels = document.getElementById('navChannels');
-  navChannels.innerHTML = CHANNELS.map(c=>
-    `<div class="nav-item" data-view="${slug(c)}"><span class="dot" style="background:${channelColor(c)};"></span>${c}</div>`
-  ).join('');
+  navChannels.innerHTML = CHANNELS.map(c=>{
+    const chanItem = `<div class="nav-item" data-view="${slug(c)}"><span class="dot" style="background:${channelColor(c)};"></span>${c}</div>`;
+    const subItems = Object.keys(DATA.accountBudgets[c]||{}).map(a=>
+      `<div class="nav-subitem" data-view="${acctSlug(c,a)}"><span class="dot"></span>${a}</div>`
+    ).join('');
+    return chanItem + subItems;
+  }).join('');
 
   const main = document.querySelector('.main');
   CHANNELS.forEach(c=>{
@@ -1469,11 +1646,20 @@ function buildNav(){
     div.id = 'view-'+s;
     div.innerHTML = channelViewHTML(c);
     main.appendChild(div);
+
+    Object.keys(DATA.accountBudgets[c]||{}).forEach(a=>{
+      const as = acctSlug(c,a);
+      const adiv = document.createElement('div');
+      adiv.className = 'view';
+      adiv.id = 'view-'+as;
+      adiv.innerHTML = accountViewHTML(c,a);
+      main.appendChild(adiv);
+    });
   });
 
-  document.querySelectorAll('.nav-item').forEach(item=>{
+  document.querySelectorAll('.nav-item, .nav-subitem').forEach(item=>{
     item.addEventListener('click', ()=>{
-      document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+      document.querySelectorAll('.nav-item, .nav-subitem').forEach(n=>n.classList.remove('active'));
       item.classList.add('active');
       const v = item.dataset.view;
       document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
@@ -1497,12 +1683,19 @@ function renderAll(){
   try{ renderOverview(); } catch(e){ console.error('renderOverview failed:', e); }
   CHANNELS.forEach(c=>{
     try{ renderChannel(c); } catch(e){ console.error('renderChannel('+c+') failed:', e); }
+    Object.keys(DATA.accountBudgets[c]||{}).forEach(a=>{
+      try{ renderAccountView(c,a); } catch(e){ console.error('renderAccountView('+c+','+a+') failed:', e); }
+    });
   });
 }
 
 document.getElementById('ovTxnChannel')?.addEventListener('change', e=>{ filters.ovChannel=e.target.value; renderOverview(); });
 document.addEventListener('input', e=>{
   if(e.target.id==='ovTxnSearch'){ filters.ovSearch = e.target.value; renderOverview(); }
+});
+document.addEventListener('click', e=>{
+  const btn = e.target.closest('[data-dl-channel]');
+  if(btn) downloadCSV(btn.dataset.dlChannel, btn.dataset.dlAccount || undefined);
 });
 
 buildNav();
