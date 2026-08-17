@@ -107,6 +107,16 @@
   .nav-item .dot{width:8px;height:8px;border-radius:50%;background:#5568A8;flex-shrink:0;}
   .nav-item:hover{background:rgba(255,255,255,0.06);}
   .nav-item.active{background:rgba(255,255,255,0.1);color:#fff;border-color:rgba(255,255,255,0.12);}
+  .nav-item .nav-label-text{flex:1;}
+  .nav-toggle{
+    background:transparent;border:none;color:#8A9BD4;cursor:pointer;
+    font-size:13px;padding:2px 5px;line-height:1;border-radius:4px;
+    flex-shrink:0;transform:rotate(0deg);transition:transform .15s ease,background .15s ease;
+  }
+  .nav-toggle:hover{background:rgba(255,255,255,0.1);color:#fff;}
+  .nav-toggle.open{transform:rotate(90deg);}
+  .nav-subgroup{display:none;flex-direction:column;gap:4px;}
+  .nav-subgroup.open{display:flex;}
   .nav-subitem{
     display:flex;align-items:center;gap:8px;
     padding:7px 12px 7px 28px;border-radius:7px;cursor:pointer;
@@ -227,6 +237,10 @@
     <!-- OVERVIEW -->
     <div class="view active" id="view-overview">
       <div class="kpi-row" id="ovKpis"></div>
+      <div class="panel">
+        <div class="panel-head"><h3>Channel-wise Budget vs Spend</h3><span class="hint">FY 2026-27 total budget vs spend to date</span></div>
+        <canvas id="ovChannelBudgetBar"></canvas>
+      </div>
       <div class="panel">
         <div class="panel-head"><h3>Monthly Investment by Channel</h3><span class="hint">Logged amount, ₹</span></div>
         <canvas id="ovTrend" class="barcanvas-tall"></canvas>
@@ -1298,6 +1312,24 @@ function renderOverview(){
     ${kpi('In-kind Activities', inKind(rows).length, 'no ₹ value captured')}
   `;
 
+  // Channel-wise Budget vs Spend (one bar pair per channel)
+  destroyChart('ovChannelBudgetBar');
+  const ctxCB = document.getElementById('ovChannelBudgetBar').getContext('2d');
+  charts.ovChannelBudgetBar = new Chart(ctxCB,{type:'bar',data:{
+    labels: CHANNELS,
+    datasets:[
+      {label:'FY Budget', backgroundColor: CHANNELS.map(c=>channelColor(c)+'40'), data: CHANNELS.map(c=>DATA.budgets[c].total)},
+      {label:'Spend to Date', backgroundColor: CHANNELS.map(channelColor), data: CHANNELS.map(c=>byChannelTotal[c])}
+    ]
+  },options:{indexAxis:'y',
+    plugins:{legend:{position:'bottom',labels:{color:chartTextColor(),font:{family:'Inter',size:11}}},
+      tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+money(ctx.raw)}}},
+    scales:{
+      x:{ticks:{color:chartTextColor(), callback:v=>'₹'+(v/100000).toFixed(0)+'L'}, grid:{color:chartGridColor()}},
+      y:{ticks:{color:chartTextColor()}, grid:{display:false}}
+    }
+  }});
+
   // Monthly trend stacked bar by channel
   destroyChart('ovTrend');
   const monthsShown = filters.month==='all' ? DATA.months : [filters.month];
@@ -1631,11 +1663,15 @@ CHANNELS.forEach(c=>{
 function buildNav(){
   const navChannels = document.getElementById('navChannels');
   navChannels.innerHTML = CHANNELS.map(c=>{
-    const chanItem = `<div class="nav-item" data-view="${slug(c)}"><span class="dot" style="background:${channelColor(c)};"></span>${c}</div>`;
-    const subItems = Object.keys(DATA.accountBudgets[c]||{}).map(a=>
+    const s = slug(c);
+    const acctNames = Object.keys(DATA.accountBudgets[c]||{});
+    const toggle = acctNames.length ? `<button class="nav-toggle" data-toggle="${s}" aria-label="Expand ${c} accounts" title="Expand ${c} accounts">&rsaquo;</button>` : '';
+    const chanItem = `<div class="nav-item" data-view="${s}"><span class="dot" style="background:${channelColor(c)};"></span><span class="nav-label-text">${c}</span>${toggle}</div>`;
+    if(!acctNames.length) return chanItem;
+    const subItems = acctNames.map(a=>
       `<div class="nav-subitem" data-view="${acctSlug(c,a)}"><span class="dot"></span>${a}</div>`
     ).join('');
-    return chanItem + subItems;
+    return chanItem + `<div class="nav-subgroup" id="subgroup-${s}">${subItems}</div>`;
   }).join('');
 
   const main = document.querySelector('.main');
@@ -1666,7 +1702,21 @@ function buildNav(){
       document.getElementById('view-'+v).classList.add('active');
       document.getElementById('viewTitle').textContent = TITLES[v][0];
       document.getElementById('viewDesc').textContent = TITLES[v][1];
+      const group = item.closest('.nav-subgroup');
+      if(group){
+        group.classList.add('open');
+        document.querySelector(`.nav-toggle[data-toggle="${group.id.replace('subgroup-','')}"]`)?.classList.add('open');
+      }
       renderAll();
+    });
+  });
+
+  document.querySelectorAll('.nav-toggle').forEach(btn=>{
+    btn.addEventListener('click', e=>{
+      e.stopPropagation();
+      const s = btn.dataset.toggle;
+      btn.classList.toggle('open');
+      document.getElementById('subgroup-'+s).classList.toggle('open');
     });
   });
 }
