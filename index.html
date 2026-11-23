@@ -238,6 +238,12 @@
   .view{display:none;}
   .view.active{display:block;}
   canvas{max-height:280px;}
+  .tgt-panel .kpi-row{margin-bottom:14px}
+  .tgt-panel table td.tabular,.tgt-panel table th.r{text-align:right}
+  .tgt-panel tr.tot td{font-weight:700;border-top:2px solid var(--border)}
+  .tgt-pct.good{color:var(--green);font-weight:700}.tgt-pct.warn{color:var(--amber);font-weight:700}.tgt-pct.crit{color:var(--red);font-weight:700}
+  .tgt-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:18px;align-items:start}
+  @media (max-width:900px){.tgt-grid{grid-template-columns:minmax(0,1fr)}}
   .barcanvas-tall{max-height:340px;}
 </style>
 </head>
@@ -273,6 +279,7 @@
     <!-- OVERVIEW -->
     <div class="view active" id="view-overview">
       <div class="kpi-row" id="ovKpis"></div>
+      <div class="panel tgt-panel" id="tgt-overview" hidden></div>
       <div class="panel">
         <div class="panel-head"><h3>Channel-wise Budget vs Spend</h3><span class="hint">FY 2026-27 total budget vs spend to date</span></div>
         <canvas id="ovChannelBudgetBar"></canvas>
@@ -2238,7 +2245,431 @@ const DATA = {
   "January"
  ],
  "sourceFile": "Marketing Budget Summary FY 2026-27- FINAL.xlsx",
- "sourceSheet": "Expense Log"
+ "sourceSheet": "Expense Log",
+ "tgt": {
+  "months": [
+   "April",
+   "May",
+   "June",
+   "July",
+   "August",
+   "September",
+   "October"
+  ],
+  "channels": {
+   "Online": {
+    "label": "Qcom",
+    "brands": [
+     {
+      "b": "DPGS",
+      "t": {
+       "April": 6770574.0,
+       "May": 10130744.0,
+       "June": 8074725.0,
+       "July": 6089617.0,
+       "August": 4064865.0,
+       "September": 4997267.504,
+       "October": 5539000.0
+      },
+      "a": {
+       "April": 9219996.719999999,
+       "May": 5971095.839999997,
+       "June": 6001969.599999999,
+       "July": 3871300.3200000003,
+       "August": 4171536.9600000004,
+       "September": 5338728.0,
+       "October": 6891557.279999999
+      }
+     },
+     {
+      "b": "DCP",
+      "t": {
+       "April": 12170.0,
+       "May": 12000.0,
+       "June": 15000.0,
+       "July": 20000.0,
+       "August": 20000.0,
+       "September": 20000.0,
+       "October": 250000.0
+      },
+      "a": {
+       "April": 5484.120000000001,
+       "May": 0.0,
+       "June": 0.0,
+       "July": 1120.08,
+       "August": 0.0,
+       "September": 584681.7599999999,
+       "October": 86246.15999999999
+      }
+     },
+     {
+      "b": "DCC",
+      "t": {
+       "April": 942659.0,
+       "May": 1006163.0,
+       "June": 955248.53941016,
+       "July": 1330089.0,
+       "August": 1568318.0,
+       "September": 1570000.0,
+       "October": 1570000.0
+      },
+      "a": {
+       "April": 859968.0,
+       "May": 705687.36,
+       "June": 1660451.0399999982,
+       "July": 980198.6400000007,
+       "August": 605615.0400000002,
+       "September": 1265375.52,
+       "October": 1299967.1999999988
+      }
+     },
+     {
+      "b": "DTC",
+      "t": {
+       "April": 368165.0,
+       "May": 322499.0,
+       "June": 689419.322286361,
+       "July": 1155001.0,
+       "August": 1517450.0,
+       "September": 1350000.0,
+       "October": 1050000.0
+      },
+      "a": {
+       "April": 280434.2400000007,
+       "May": 504349.20000000054,
+       "June": 679412.1600000018,
+       "July": 606980.160000001,
+       "August": 394030.08000000095,
+       "September": 999164.8800000021,
+       "October": 520719.1200000017
+      }
+     }
+    ],
+    "total": {
+     "t": {
+      "April": 8093568.0,
+      "May": 11471406.0,
+      "June": 9734392.861696523,
+      "July": 8594707.0,
+      "August": 7170633.0,
+      "September": 7937267.504,
+      "October": 8409000.0
+     },
+     "a": {
+      "April": 10365883.079999998,
+      "May": 7181132.399999998,
+      "June": 8341832.8,
+      "July": 5459599.200000002,
+      "August": 5171182.080000002,
+      "September": 8187950.160000001,
+      "October": 8798489.76
+     }
+    }
+   },
+   "Strategic Accounts": {
+    "label": "Stretegic accounts",
+    "brands": [
+     {
+      "b": "DPGS",
+      "t": {
+       "April": 246675.0,
+       "May": 246676.0,
+       "June": 316040.330105821,
+       "July": 344760.2,
+       "August": 293033.3640741795,
+       "September": 266615.0,
+       "October": 200000.0
+      },
+      "a": {
+       "April": 99530.34999999999,
+       "May": 83160.0,
+       "June": 168787.19999999998,
+       "July": 273743.30999999994,
+       "August": 67765.2,
+       "September": 55238.64,
+       "October": 65740.32
+      }
+     },
+     {
+      "b": "DCP",
+      "t": {
+       "April": 1137413.0,
+       "May": 1157413.0,
+       "June": 1263834.82713984,
+       "July": 1534386.45,
+       "August": 1591483.8839200498,
+       "September": 1521581.0,
+       "October": 1300000.0
+      },
+      "a": {
+       "April": 604096.64,
+       "May": 830489.8600000001,
+       "June": 1018059.6900000002,
+       "July": 1366462.35,
+       "August": 105041.04,
+       "September": 506098.56,
+       "October": 466191.3600000001
+      }
+     },
+     {
+      "b": "DCC",
+      "t": {
+       "April": 254567.0,
+       "May": 209608.0,
+       "June": 307694.0,
+       "July": 161237.0,
+       "August": 205354.4802692736,
+       "September": 111307.0,
+       "October": 108423.0
+      },
+      "a": {
+       "April": 83127.23999999999,
+       "May": 92756.1,
+       "June": 36141.84,
+       "July": 67415.76,
+       "August": 0.0,
+       "September": 2931.12,
+       "October": 27357.84
+      }
+     },
+     {
+      "b": "DTC",
+      "t": {
+       "April": 1213246.0,
+       "May": 1053788.0,
+       "June": 1267666.0,
+       "July": 1288966.6544,
+       "August": 1410128.271736497,
+       "September": 1578219.0,
+       "October": 1500000.0
+      },
+      "a": {
+       "April": 449153.81999999995,
+       "May": 342461.1,
+       "June": 651929.5,
+       "July": 1300438.0,
+       "August": 239209.56000000003,
+       "September": 1112366.52,
+       "October": 843384.96
+      }
+     },
+     {
+      "b": "DPB",
+      "t": {
+       "April": 150000.0,
+       "May": 100000.0,
+       "June": 0.0,
+       "July": 0.0,
+       "August": 0.0,
+       "September": 0.0,
+       "October": 0.0
+      },
+      "a": {
+       "April": 78313.47,
+       "May": 16662.84,
+       "June": 0.0,
+       "July": 0.0,
+       "August": 0.0,
+       "September": 0.0,
+       "October": 0.0
+      }
+     }
+    ],
+    "total": {
+     "t": {
+      "April": 3001901.0,
+      "May": 2767485.0,
+      "June": 3155235.157245661,
+      "July": 3329350.3044,
+      "August": 3500000.0,
+      "September": 3477722.0,
+      "October": 3108423.0
+     },
+     "a": {
+      "April": 1314221.5199999998,
+      "May": 1365529.9000000001,
+      "June": 1874918.2300000002,
+      "July": 3008059.42,
+      "August": 412015.80000000005,
+      "September": 1676634.8399999999,
+      "October": 1402674.48
+     }
+    }
+   },
+   "Offline": {
+    "label": "Offline",
+    "brands": [
+     {
+      "b": "DPGS",
+      "t": {
+       "April": 1192481.0,
+       "May": 1192481.0,
+       "June": 1030583.61911847,
+       "July": 835673.312,
+       "August": 978699.1805,
+       "September": 914264.43834689,
+       "October": 811940.0
+      },
+      "a": {
+       "April": 1180812.0399999998,
+       "May": 1250889.44,
+       "June": 677015.39,
+       "July": 886336.32,
+       "August": 1017755.1000000001,
+       "September": 732881.75,
+       "October": 1290998.1699999997
+      }
+     },
+     {
+      "b": "DCP",
+      "t": {
+       "April": 1796105.0,
+       "May": 1596105.0,
+       "June": 1528578.99686555,
+       "July": 1266602.0,
+       "August": 1359339.9807,
+       "September": 942653.0,
+       "October": 819391.0
+      },
+      "a": {
+       "April": 1196049.4699999997,
+       "May": 1886372.5700000003,
+       "June": 575728.3300000001,
+       "July": 1243658.53,
+       "August": 856957.11,
+       "September": 524537.43,
+       "October": 956716.98
+      }
+     },
+     {
+      "b": "DCC",
+      "t": {
+       "April": 410778.0,
+       "May": 815385.0,
+       "June": 561992.768010914,
+       "July": 523560.8522,
+       "August": 515703.0,
+       "September": 599381.0,
+       "October": 606233.0
+      },
+      "a": {
+       "April": 606149.01,
+       "May": 390595.3599999999,
+       "June": 380311.9500000001,
+       "July": 332711.8499999998,
+       "August": 397947.1699999999,
+       "September": 461500.94,
+       "October": 413893.2299999999
+      }
+     },
+     {
+      "b": "DTC",
+      "t": {
+       "April": 440734.0,
+       "May": 465642.0,
+       "June": 458960.0,
+       "July": 452193.3405,
+       "August": 467820.3093,
+       "September": 588117.0,
+       "October": 910474.0
+      },
+      "a": {
+       "April": 358185.99,
+       "May": 399737.3999999999,
+       "June": 462843.04,
+       "July": 316452.27,
+       "August": 436912.82,
+       "September": 649021.23,
+       "October": 430519.0200000001
+      }
+     },
+     {
+      "b": "DPB",
+      "t": {
+       "April": 100000.0,
+       "May": 0.0,
+       "June": 0.0,
+       "July": 0.0,
+       "August": 0.0,
+       "September": 0.0,
+       "October": 0.0
+      },
+      "a": {
+       "April": 0.0,
+       "May": 0.0,
+       "June": 0.0,
+       "July": 0.0,
+       "August": 0.0,
+       "September": 0.0,
+       "October": 0.0
+      }
+     }
+    ],
+    "total": {
+     "t": {
+      "April": 3940098.0,
+      "May": 4069613.0,
+      "June": 3580115.3839949337,
+      "July": 3078029.5047,
+      "August": 3321562.4705,
+      "September": 3044415.43834689,
+      "October": 3148038.0
+     },
+     "a": {
+      "April": 3341196.51,
+      "May": 3927594.77,
+      "June": 2095898.7100000004,
+      "July": 2779158.9699999997,
+      "August": 2709572.1999999997,
+      "September": 2367941.35,
+      "October": 3092127.3999999994
+     }
+    }
+   }
+  },
+  "others": {
+   "label": "Others",
+   "t": {
+    "April": 0.0,
+    "May": 0.0,
+    "June": 0.0,
+    "July": 0.0,
+    "August": 0.0,
+    "September": 0.0,
+    "October": 0.0
+   },
+   "a": {
+    "April": 0.0,
+    "May": 0.0,
+    "June": 622657.0,
+    "July": 746435.0,
+    "August": 179419.0,
+    "September": 20049.84,
+    "October": 242041.8
+   }
+  },
+  "overall": {
+   "t": {
+    "April": 15035567.0,
+    "May": 18308504.0,
+    "June": 16469743.402937118,
+    "July": 15002086.8091,
+    "August": 13992195.4705,
+    "September": 14459404.94234689,
+    "October": 14665461.0
+   },
+   "a": {
+    "April": 15021301.109999998,
+    "May": 12474257.069999997,
+    "June": 12935306.74,
+    "July": 11993252.590000002,
+    "August": 8472189.080000002,
+    "September": 12252576.190000001,
+    "October": 13535333.44
+   }
+  },
+  "source": "TGT Vs ACH.xlsx"
+ }
 };
 
 /* ---------------- PALETTE (validated categorical set — see dataviz skill) ---------------- */
@@ -2590,6 +3021,7 @@ function channelViewHTML(channel){
   const s = slug(channel);
   return `
     <div class="kpi-row" id="kpis-${s}"></div>
+    <div class="panel tgt-panel" id="tgt-${s}" hidden></div>
     <div class="panel">
       <div class="panel-head"><h3>Monthly Investment</h3><span class="hint">Logged amount, ₹</span></div>
       <canvas id="trend-${s}" class="barcanvas-tall"></canvas>
@@ -2792,10 +3224,52 @@ function buildMonthFilter(){
   sel.addEventListener('change', e=>{ filters.month=e.target.value; renderAll(); });
 }
 
+/* ---------------- SALES TARGET vs ACHIEVEMENT (TGT Vs ACH.xlsx) ---------------- */
+const TGT_BRAND = {DPGS:'Pop Goli Soda', DCP:'Coco Poco', DCC:'Cotton Candy', DTC:'Tapioca Crisps', DPB:'Pop Boba'};
+const TGT_MON = {April:"Apr'26",May:"May'26",June:"Jun'26",July:"Jul'26",August:"Aug'26",September:"Sep'26",October:"Oct'26",November:"Nov'26",December:"Dec'26",January:"Jan'27",February:"Feb'27",March:"Mar'27"};
+function lakh(n){ n=n||0; const a=Math.abs(n), s=n<0?'-':''; return a>=1e7 ? s+'₹'+(a/1e7).toFixed(2)+' Cr' : s+'₹'+(a/1e5).toFixed(2)+' L'; }
+function tgtCls(p){ return p==null ? '' : p>=100 ? 'good' : p>=85 ? 'warn' : 'crit'; }
+function renderTgt(key){
+  const T = DATA.tgt, box = document.getElementById('tgt-'+key);
+  if(!box) return;
+  const node = !T ? null : key==='overview' ? T.overall : (T.channels[CHANNELS.find(c=>slug(c)===key)]||null);
+  if(!node){ box.hidden = true; return; }
+  box.hidden = false;
+  const inT = filters.month!=='all' && T.months.includes(filters.month);
+  const months = filters.month==='all' ? T.months : inT ? [filters.month] : [];
+  const period = filters.month==='all' ? "YTD "+TGT_MON[T.months[0]]+" – "+TGT_MON[T.months[T.months.length-1]] : TGT_MON[filters.month];
+  const tot = (o)=>({t:months.reduce((s,m)=>s+(o.t[m]||0),0), a:months.reduce((s,m)=>s+(o.a[m]||0),0)});
+  const head = `<div class="panel-head"><h3>Sales Target vs Achievement · ${period}</h3><span class="hint">Secondary sales, ₹ · source: ${T.source}</span></div>`;
+  if(!months.length){ destroyChart('tgt-'+key); box.innerHTML = head + `<div class="hint" style="padding:8px 0">No target / achievement figures for ${TGT_MON[filters.month]} in ${T.source} yet.</div>`; return; }
+  const ov = key==='overview', nt = ov ? T.overall : node.total || node;
+  const x = tot(nt), p = x.t ? x.a/x.t*100 : null, gap = x.a - x.t;
+  const kp = kpi((ov?'DOBRA ':'')+(filters.month==='all'?'YTD ':'')+'Target', lakh(x.t), period)
+    + kpi((filters.month==='all'?'YTD ':'')+'Achieved', lakh(x.a), period)
+    + kpi('Achievement', p==null?'—':pct(p), p==null?'':(p>=100?'target met':'of target'), tgtCls(p))
+    + kpi(gap>=0?'Ahead by':'Short by', lakh(Math.abs(gap)), gap>=0?'above target':'below target', gap>=0?'good':'crit');
+  // table: channels on Overview, brands on a channel tab
+  let lines;
+  if(ov){
+    lines = Object.entries(T.channels).map(([c,n])=>({name:c+(n.label&&!n.label.toLowerCase().includes(c.toLowerCase().slice(0,3))?' ('+n.label+')':''), ...tot(n.total||{t:{},a:{}})}));
+    if(T.others) lines.push({name:'Others (no target)', ...tot(T.others)});
+  } else lines = node.brands.map(r=>({name:r.b+(TGT_BRAND[r.b]?' · '+TGT_BRAND[r.b]:''), ...tot(r)})).filter(r=>r.t||r.a);
+  const row = (r,cls='')=>{ const q = r.t ? r.a/r.t*100 : null; return `<tr class="${cls}"><td>${r.name}</td><td class="tabular">${r.t?lakh(r.t):'—'}</td><td class="tabular">${lakh(r.a)}</td><td class="tabular"><span class="tgt-pct ${tgtCls(q)}">${q==null?'—':pct(q)}</span></td><td class="tabular">${lakh(r.a-r.t)}</td></tr>`; };
+  const table = `<div class="table-wrap" style="max-height:none"><table><thead><tr><th>${ov?'Channel':'Brand'}</th><th class="r">Target</th><th class="r">Achieved</th><th class="r">Ach %</th><th class="r">Gap</th></tr></thead><tbody>${lines.map(r=>row(r)).join('')}${row({name:ov?'DOBRA Total':'Total',...x},'tot')}</tbody></table></div>`;
+  box.innerHTML = head + `<div class="kpi-row">${kp}</div><div class="tgt-grid"><div>${table}</div><div><canvas id="tgtc-${key}"></canvas></div></div>`;
+  destroyChart('tgt-'+key);
+  const ms = filters.month==='all' ? T.months : [filters.month];
+  charts['tgt-'+key] = new Chart(document.getElementById('tgtc-'+key), {type:'bar', data:{labels:ms.map(m=>TGT_MON[m]), datasets:[
+      {label:'Target', data:ms.map(m=>nt.t[m]||0), backgroundColor:isDark()?'#3A4A6B':'#C9D3E8', borderRadius:4},
+      {label:'Achieved', data:ms.map(m=>nt.a[m]||0), backgroundColor:isDark()?'#99D8E9':'#25256A', borderRadius:4}]},
+    options:{responsive:true, maintainAspectRatio:true, plugins:{legend:{labels:{color:chartTextColor()}}, tooltip:{callbacks:{label:(c)=>c.dataset.label+': '+lakh(c.parsed.y)}}},
+      scales:{x:{ticks:{color:chartTextColor()}, grid:{display:false}}, y:{ticks:{color:chartTextColor(), callback:(v)=>lakh(v)}, grid:{color:chartGridColor()}}}}});
+}
+
 function renderAll(){
   // Each view renders independently — one view's error (e.g. a chart failing to
   // draw) must never block the others from populating.
   try{ renderOverview(); } catch(e){ console.error('renderOverview failed:', e); }
+  ['overview'].concat(CHANNELS.map(slug)).forEach(k=>{ try{ renderTgt(k); } catch(e){ console.error('renderTgt('+k+') failed:', e); } });
   CHANNELS.forEach(c=>{
     try{ renderChannel(c); } catch(e){ console.error('renderChannel('+c+') failed:', e); }
     Object.keys(DATA.accountBudgets[c]||{}).forEach(a=>{
