@@ -2823,6 +2823,10 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', ren
 
 renderAll();
 </script>
+<script>
+// installable app: register the offline cache (https only, e.g. GitHub Pages)
+if ('serviceWorker' in navigator && location.protocol === 'https:') addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+</script>
 
 </body>
 </html>
