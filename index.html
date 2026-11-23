@@ -263,7 +263,7 @@
       </div>
       <div class="filters">
         <select id="fMonth">
-          <option value="all">All months (Apr&ndash;Jul)</option>
+          <option value="all">All Months</option>
         </select>
       </div>
     </div>
@@ -2785,7 +2785,10 @@ function buildNav(){
 
 function buildMonthFilter(){
   const sel = document.getElementById('fMonth');
-  DATA.months.forEach(m=>{ const o=document.createElement('option'); o.value=m; o.textContent=m; sel.appendChild(o); });
+  // full FY: Apr'26 .. Mar'27 (value = month name used in the Expense Log)
+  const FY = [['April',"Apr'26"],['May',"May'26"],['June',"Jun'26"],['July',"Jul'26"],['August',"Aug'26"],['September',"Sep'26"],
+              ['October',"Oct'26"],['November',"Nov'26"],['December',"Dec'26"],['January',"Jan'27"],['February',"Feb'27"],['March',"Mar'27"]];
+  FY.forEach(([m,l])=>{ const o=document.createElement('option'); o.value=m; o.textContent=l+(DATA.months.includes(m)?'':' (no entries yet)'); sel.appendChild(o); });
   sel.addEventListener('change', e=>{ filters.month=e.target.value; renderAll(); });
 }
 
