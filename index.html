@@ -206,18 +206,21 @@
   .grid-2{display:grid;grid-template-columns:1.3fr 1fr;gap:20px;}
   .grid-2 > .panel{margin-bottom:0;}
   @media (max-width:900px){.grid-2{grid-template-columns:1fr;} .app{grid-template-columns:1fr;} .sidebar{position:relative;height:auto;}}
-  .menu-btn{display:none}
+  .tabbar,.acct-strip{display:none}
   @media (max-width:700px){
     .app{grid-template-columns:minmax(0,1fr)}.main{min-width:0;width:100%}.main>*{max-width:100%}.grid-2{grid-template-columns:minmax(0,1fr)}.grid-2>.panel,.panel{min-width:0}
-    .sidebar{position:sticky;top:0;z-index:30;height:auto;max-height:100vh;padding:calc(10px + env(safe-area-inset-top)) 14px 10px;box-shadow:0 2px 10px rgba(0,0,0,.2)}
-    .sidebar .brand{margin:0;padding-right:96px}.sidebar .brand h1{font-size:14px}.sidebar .brand h1 br{display:none}
-    .menu-btn{display:flex;align-items:center;gap:6px;position:absolute;z-index:5;right:12px;top:calc(7px + env(safe-area-inset-top));background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:6px 10px;font:600 13px ui-sans-serif,-apple-system,'Segoe UI',Roboto,sans-serif;cursor:pointer}
+    .sidebar{position:sticky;top:0;z-index:30;height:auto;padding:calc(10px + env(safe-area-inset-top)) 14px 10px;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+    .sidebar .brand{margin:0}.sidebar .brand h1{font-size:14px}.sidebar .brand h1 br{display:none}
     .sidebar .brand-sub,.sidebar .nav,.sidebar .nav-label,.sidebar .side-foot{display:none}
-    .sidebar.open{overflow-y:auto}
-    .sidebar.open .nav,.sidebar.open .nav-label{display:flex}
-    .sidebar.open .nav-label{display:block;margin-top:14px}
-    .sidebar.open #nav{margin-top:12px}
-    .main{padding:14px 12px calc(40px + env(safe-area-inset-bottom))}
+    .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;background:#25256A;gap:2px;padding:6px 6px calc(6px + env(safe-area-inset-bottom));box-shadow:0 -4px 16px rgba(0,0,0,.22)}
+    .tabbar button{all:unset;flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:4px;padding:7px 2px;border-radius:8px;border:1px solid transparent;color:#C7D0EF;font:500 11.5px ui-sans-serif,-apple-system,'Segoe UI',Roboto,sans-serif;text-align:center;line-height:1.15;cursor:pointer}
+    .tabbar button .dot{width:8px;height:8px;border-radius:50%}
+    .tabbar button.active{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.14);color:#fff;font-weight:600}
+    .acct-strip{display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px;margin-bottom:4px;-webkit-overflow-scrolling:touch}
+    .acct-strip:empty{display:none}
+    .acct-strip button{all:unset;flex:0 0 auto;padding:5px 11px;border-radius:20px;border:1px solid var(--border);background:var(--panel, #fff);color:var(--ink);font:600 12px ui-sans-serif,-apple-system,'Segoe UI',Roboto,sans-serif;cursor:pointer}
+    .acct-strip button.active{background:var(--accent);border-color:var(--accent);color:#fff}
+    .main{padding:14px 12px calc(84px + env(safe-area-inset-bottom))}
     .topbar{margin-bottom:12px;gap:10px}.topbar h2{font-size:18px}.topbar .desc{font-size:12px}
     .topbar .filters,.topbar .filters select{width:100%}
     .hint-banner{font-size:11.5px;padding:8px 10px}
@@ -243,7 +246,6 @@
 <div class="app">
   <div class="sidebar">
     <div class="brand"><div class="brand-mark"></div><h1>MARKETING<br> INVESTMENT</h1></div>
-    <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="nav">&#9776; Menu</button>
     <div class="brand-sub">FY 2026-27 &middot; Expense Log</div>
     <div class="nav" id="nav">
       <div class="nav-item active" data-view="overview"><span class="dot" style="background:#99D8E9;"></span>Overview</div>
@@ -2810,11 +2812,31 @@ document.addEventListener('click', e=>{
 
 buildNav();
 buildMonthFilter();
-(() => { // phone menu drawer
-  const sb = document.querySelector('.sidebar'), mb = document.getElementById('menuBtn');
-  const set = (o) => { sb.classList.toggle('open', o); mb.setAttribute('aria-expanded', String(o)); mb.innerHTML = o ? '&#10005; Close' : '&#9776; Menu'; };
-  mb.addEventListener('click', () => set(!sb.classList.contains('open')));
-  sb.addEventListener('click', (e) => { if (e.target.closest('.nav-item, .nav-subitem') && !e.target.closest('.nav-toggle')) { set(false); window.scrollTo(0, 0); } });
+(() => { // phone: bottom tab bar for channels + account chips under the title
+  const short = {'Strategic Accounts': 'Strategic'};
+  const items = [...document.querySelectorAll('.sidebar .nav-item[data-view]')];
+  const bar = document.createElement('nav'); bar.className = 'tabbar'; bar.setAttribute('aria-label', 'Sections');
+  items.forEach((it) => {
+    const b = document.createElement('button'); b.type = 'button'; b.dataset.view = it.dataset.view;
+    const dot = it.querySelector('.dot'); const d = document.createElement('span'); d.className = 'dot'; d.style.background = dot ? dot.style.background : '#99D8E9';
+    const name = (it.querySelector('.nav-label-text') || it).textContent.trim(); const l = document.createElement('span'); l.textContent = short[name] || name;
+    b.append(d, l); b.addEventListener('click', () => { it.click(); window.scrollTo(0, 0); }); bar.append(b);
+  });
+  document.body.append(bar);
+  const strip = document.createElement('div'); strip.className = 'acct-strip'; strip.setAttribute('aria-label', 'Accounts');
+  document.querySelector('.topbar').after(strip);
+  const sync = () => {
+    const act = document.querySelector('.sidebar .nav-item.active, .sidebar .nav-subitem.active'); if (!act) return;
+    const grp = act.closest('.nav-subgroup'), ch = grp ? grp.id.replace('subgroup-', '') : act.dataset.view;
+    bar.querySelectorAll('button').forEach((b) => b.classList.toggle('active', b.dataset.view === ch));
+    strip.replaceChildren();
+    const subs = [...document.querySelectorAll('#subgroup-' + ch + ' .nav-subitem')]; if (!subs.length) return;
+    const chip = (label, el) => { const c = document.createElement('button'); c.type = 'button'; c.textContent = label; c.classList.toggle('active', el === act); c.addEventListener('click', () => { el.click(); window.scrollTo(0, 0); }); strip.append(c); };
+    chip('All', document.querySelector('.sidebar .nav-item[data-view="' + ch + '"]'));
+    subs.forEach((sb) => chip(sb.textContent.trim(), sb));
+  };
+  document.querySelector('.sidebar').addEventListener('click', () => setTimeout(sync, 0));
+  sync();
 })();
 document.getElementById('sideFoot').innerHTML =
   'Source: '+DATA.sourceFile+'<br>Sheet: "'+DATA.sourceSheet+'"<br>Months logged: '+DATA.months.join(', ');
